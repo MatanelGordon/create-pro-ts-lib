@@ -1,0 +1,20 @@
+{
+  "name": "create-pro-ts-lib",
+  "version": "1.0.0",
+  "description": "A command-line-interface for building Typescript library boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatanelGordon/create-pro-ts-lib.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatanelGordon/create-pro-ts-lib/issues"
+  },
+  "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme"
+}
