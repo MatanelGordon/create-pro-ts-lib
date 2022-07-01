@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "name": "base",
+  "private": false,
+  "version": "1.0.0"
+}
