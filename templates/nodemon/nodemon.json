@@ -1,0 +1,6 @@
+{
+  "ext": "json,ts",
+  "execMap": {
+    "ts": "ts-node"
+  }
+}

@@ -4,7 +4,11 @@
   "description": "A command-line-interface for building Typescript library boilerplate",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon ./index.js"
+  },
+  "bin": {
+    "create-pro-ts-lib": "./index.js",
+    "cptl": "./index.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +20,19 @@
   "bugs": {
     "url": "https://github.com/MatanelGordon/create-pro-ts-lib/issues"
   },
-  "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme"
+  "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
+  "dependencies": {
+    "chalk": "4",
+    "prompts": "^2.4.2",
+    "yargs": "^17.5.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.182",
+    "@types/node": "^18.0.0",
+    "@types/prompts": "^2.0.14",
+    "@types/yargs": "^17.0.10",
+    "add": "^2.0.6",
+    "lodash": "^4.17.21",
+    "yarn": "^1.22.19"
+  }
 }
