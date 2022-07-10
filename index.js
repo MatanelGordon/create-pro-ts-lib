@@ -61,7 +61,7 @@ async function main(argv) {
 
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
-            console.log(chalk.red(`ok never mind...`));
+            console.log(chalk.red(`ok nevermind...`));
             return;
         }
 
