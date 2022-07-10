@@ -1,5 +1,5 @@
 const {Option} = require('./utils/options');
-const eslintLogic = require('./logics/eslint');
+const {eslint} = require('./logics');
 
 module.exports = {
     options: [
@@ -10,7 +10,7 @@ module.exports = {
         new Option('eslint')
             .setDescription('Adds eslint to your ts project')
             .setAlias('e')
-            .setLogic(eslintLogic),
+            .setLogic(eslint),
 
         new Option('prettier')
             .setDescription('Adds prettier to your ts project')
@@ -25,12 +25,13 @@ module.exports = {
             .setDescription('ADDS ALL FEATURES TO YOUR TS PROJECT')
             .setAlias('a'),
 
-        new Option('name', {isFlagOnly: true, type:'string'})
+        new Option('name', {isFlagOnly: true, type: 'string'})
             .setDescription('Determines project name')
     ],
-    files:{
-        rename:{
-            '_package.json':'package.json'
+    files: {
+        rename: {
+            '_package.json': 'package.json',
+            '_gitignore': '.gitignore'
         }
     }
 }

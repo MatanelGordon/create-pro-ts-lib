@@ -3,11 +3,11 @@ const _ = require('lodash');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const chalk = require('chalk');
-const prompts = require('./utils/prompts');
+const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const FileManager = require('./utils/filesManager');
 const {optionsToPrompts, toYargsOptionsParam, OptionsHandler} = require('./utils/options');
 const config = require('./config');
-
+const loadBaseLogic = require('./logics/base')
 const {options} = config;
 
 const mainCommand = yargs(hideBin(process.argv))
@@ -32,7 +32,7 @@ async function main(argv) {
     const flags = optionsHandler.getFlags(argv);
     const cliOptions = optionsHandler.getOptions(argv);
 
-    if(flags['all']){
+    if (flags['all']) {
         // 'all' logic here
         return;
     }
@@ -40,12 +40,9 @@ async function main(argv) {
     //build questions
     const questions = []
 
-    if(!flags['name']){
+    if (!flags['name']) {
         questions.push({
-            type: 'text',
-            name: 'name',
-            message: 'Project Name',
-            initial: dir
+            type: 'text', name: 'name', message: 'Project Name', initial: dir
         })
     }
 
@@ -55,19 +52,20 @@ async function main(argv) {
 
     try {
         const formResults = await prompts(questions);
-        const selectedOptions  = _.uniqBy([
-            ...cliOptions,
-            ...formResults?.options ?? [],
-        ])
+        const selectedOptions = _.uniqBy([...cliOptions, ...formResults?.options ?? [],])
 
         console.log({selectedOptions})
 
-        selectedOptions.forEach(option => {
-            option.logic(filesManager, config)
-        })
+        await loadBaseLogic(filesManager, config);
+        await Promise.all(selectedOptions.map(option => option?.logic(filesManager, config)));
 
     } catch (e) {
-        console.log(chalk.red(`ok never mind...`));
+        if(e?.code === CANCELLED_REQUEST){
+            console.log(chalk.red(`ok never mind...`));
+            return;
+        }
+
+        throw e;
     }
 }
 
