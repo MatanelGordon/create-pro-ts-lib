@@ -59,12 +59,13 @@ async function main(argv) {
             ...cliOptions,
             ...formResults?.options ?? [],
         ])
+
         console.log({selectedOptions})
 
         selectedOptions.forEach(option => {
             option.logic(filesManager, config)
         })
-        console.log(formResults);
+
     } catch (e) {
         console.log(chalk.red(`ok never mind...`));
     }

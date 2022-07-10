@@ -1,4 +1,4 @@
-const Option = require('./utils/option');
+const {Option} = require('./utils/options');
 const eslintLogic = require('./logics/eslint');
 
 module.exports = {
