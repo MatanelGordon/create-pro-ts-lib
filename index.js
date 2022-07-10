@@ -2,22 +2,19 @@
 const _ = require('lodash');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
-const prompts = require('prompts');
 const chalk = require('chalk');
-const NOOP = () => {};
+const prompts = require('./utils/prompts');
+const FileManager = require('./utils/filesManager');
+const {optionsToPrompts, toYargsOptionsParam, OptionsHandler} = require('./utils/options');
+const config = require('./config');
 
-const options = {
-    tests:    {describe: 'Adds tests to your ts project', type: 'boolean', alias: 't'},
-    nodemon:  {describe: 'Adds nodemon to your ts project', type:"boolean", alias:"n"},
-    eslint:   {describe: 'Adds eslint to your ts project', type: 'boolean', alias: 'e'},
-    prettier: {describe: 'Adds prettier to your ts project', type:'boolean', alias:'p'}
-}
+const {options} = config;
 
 const mainCommand = yargs(hideBin(process.argv))
     .usage('usage: \n\r create-pro-ts-lib <directory> <options>')
     .help()
     .version('1.0.0')
-    .options(options)
+    .options(toYargsOptionsParam(options))
     .positional('directory', {describe: 'A directory where you want initialize your ts project', type: 'string'})
 
 const resolveDirectory = argv => {
@@ -28,48 +25,47 @@ const resolveDirectory = argv => {
     return dirs[0];
 }
 
-const optionsToPrompts = (options) => ({
-    type:'multiselect',
-    name: 'options',
-    message: 'pick your features',
-    hint: '- Space to select. Return to submit',
-    instructions: false,
-    min:1,
-    choices: Object.keys(options).map(option => ({
-        title: option,
-        selected: true,
-        value: option
-    }))
-})
-
-const promptsWrapper = (questions, onCancel = NOOP, onSubmit = NOOP) => {
-    const onCancelWrapper = prompt => {
-        onCancel(prompt);
-        throw new Error('cancelled prompts');
-    }
-
-    return prompts(questions, {onCancel:onCancelWrapper, onSubmit})
-}
-
-
 async function main(argv) {
     const dir = resolveDirectory(argv);
-    const cmdFlags = _.pick(argv, Object.keys(options));
-    const isNoFlags = Object.keys(cmdFlags).length === 0;
+    const filesManager = new FileManager(dir);
+    const optionsHandler = new OptionsHandler(options);
+    const flags = optionsHandler.getFlags(argv);
+    const cliOptions = optionsHandler.getOptions(argv);
 
-    const questions = [
-        {type: 'text', name: 'name', message: 'project-name', initial: dir}
-    ]
+    if(flags['all']){
+        // 'all' logic here
+        return;
+    }
 
-    if (isNoFlags) {
+    //build questions
+    const questions = []
+
+    if(!flags['name']){
+        questions.push({
+            type: 'text',
+            name: 'name',
+            message: 'Project Name',
+            initial: dir
+        })
+    }
+
+    if (cliOptions.length === 0) {
         questions.push(optionsToPrompts(options));
     }
 
-    try{
-        const formResults = await promptsWrapper(questions);
+    try {
+        const formResults = await prompts(questions);
+        const selectedOptions  = _.uniqBy([
+            ...cliOptions,
+            ...formResults?.options ?? [],
+        ])
+        console.log({selectedOptions})
+
+        selectedOptions.forEach(option => {
+            option.logic(filesManager, config)
+        })
         console.log(formResults);
-    }
-    catch (e) {
+    } catch (e) {
         console.log(chalk.red(`ok never mind...`));
     }
 }

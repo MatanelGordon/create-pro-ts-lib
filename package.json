@@ -4,7 +4,7 @@
   "description": "A command-line-interface for building Typescript library boilerplate",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./index.js"
+    "run": "node ./index.js my-proj"
   },
   "bin": {
     "create-pro-ts-lib": "./index.js",
@@ -23,12 +23,13 @@
   "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
   "dependencies": {
     "chalk": "4",
+    "chavascript": "^0.1.3",
     "prompts": "^2.4.2",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
-    "@types/node": "^18.0.0",
+    "@types/node": "16",
     "@types/prompts": "^2.0.14",
     "@types/yargs": "^17.0.10",
     "add": "^2.0.6",
