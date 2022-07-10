@@ -6,10 +6,11 @@ const readTemplateFiles = async (templatePath, config = {}) => {
     const filesNames = await readdir(templatePath);
     const filesPaths = filesNames.map(name => path.join(templatePath, name));
     const files = await Promise.all(_.zip(filesNames, filesPaths).map(async ([name, filePath]) => {
-        let content = await readFile(filePath);
+        const contentBuffer = await readFile(filePath);
+        let content = contentBuffer.toString('utf8');
 
         if (path.extname(name) === '.json') {
-            content = JSON.parse(content.toString('utf8'))
+            content = JSON.parse(content);
         }
 
         return {
