@@ -1,9 +1,10 @@
+const _ = require("lodash");
+
 const toYargsOptionsParam = options => options.reduce((acc, option) => {
     const name = option.name;
     const yargsSettings = option.yargsSettings;
     return {
-        ...acc,
-        [name]: yargsSettings
+        ...acc, [name]: yargsSettings
     };
 }, {})
 
@@ -49,22 +50,74 @@ class OptionsHandler {
     }
 }
 
+/*
+handles collections for options
+ */
+class OptionsCollection {
+    #options = [];
+
+    get list() {
+        return this.#options;
+    }
+
+    add(...options) {
+        for (const option of options) {
+            if (!option instanceof Option) {
+                throw new Error('inserted Option that is not of type Option')
+            }
+            if (!this.#options.find(option0 => option0.name === option.name)) {
+                this.#options.push(option);
+            }
+        }
+        return this;
+    }
+
+    addAll(options){
+        this.add(...options);
+        return this;
+    }
+
+    remove(option) {
+        const name = typeof option === "string" ? option : option.name;
+        _.remove(this.#options, option => option.name === name);
+        return this;
+    }
+
+    includes(option) {
+        if (option instanceof Option) {
+            return this.#options.includes(option);
+        } else if (typeof option === 'string') {
+            return !!this.#options.find(item => item.name === option || item.alias === option);
+        }
+        throw new Error(`parameter "option" doesnt have a valid type: ${typeof option}`);
+    }
+
+    includesAll(...options) {
+        return options.length !== 0 && options.reduce((acc, curr) => acc && this.includes(curr), true);
+    }
+
+    getByName(name){
+        return this.#options.find(option => option.name === name);
+    }
+}
+
 /**
  * Represents an option.
  */
-class Option{
-    static #initialOptions = {type:'boolean', isFlagOnly: false};
+class Option {
+    static #initialOptions = {type: 'boolean', isFlagOnly: false};
 
     #yargsSettings = {}
     #name;
     #isFlagOnly;
     #initialSelected;
-    #logic = () => {};
+    #logic = () => {
+    };
+
     constructor(name, options = {}) {
 
         const {type, isFlagOnly} = {
-            ...Option.#initialOptions,
-            ...options
+            ...Option.#initialOptions, ...options
         }
 
         this.#name = name;
@@ -73,49 +126,55 @@ class Option{
         this.#initialSelected = true;
     }
 
-    get yargsSettings(){
+    get yargsSettings() {
         return this.#yargsSettings;
     }
 
-    get name(){
+    get name() {
         return this.#name;
     }
 
-    get logic(){
+    get logic() {
         return this.#logic;
     }
 
-    get isFlagOnly(){
+    get isFlagOnly() {
         return this.#isFlagOnly;
     }
 
-    get initialSelected(){
+    get initialSelected() {
         return this.#initialSelected;
     }
 
-    setAlias(alias){
+    setAlias(alias) {
         this.#yargsSettings.alias = alias;
         return this;
     }
 
-    setInitialSelected(isSelected){
+    setInitialSelected(isSelected) {
         this.#initialSelected = isSelected;
         return this;
     }
 
-    setDescription(value){
+    setDescription(value) {
         this.#yargsSettings.describe = value;
         return this;
     }
 
-    setLogic(logicFunc){
+    setLogic(logicFunc) {
         this.#logic = logicFunc;
         return this;
     }
 
-    toString(){
+    toString() {
         return `Option{ ${this.name} }`
     }
 }
 
-module.exports = {optionsToPrompts, toYargsOptionsParam, OptionsHandler, Option};
+module.exports = {
+    optionsToPrompts,
+    toYargsOptionsParam,
+    OptionsHandler,
+    Option,
+    OptionsCollection
+};

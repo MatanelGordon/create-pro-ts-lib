@@ -6,7 +6,6 @@ const baseLogic = async (fileManager, config) => {
     Object.entries(files).forEach(([name, content]) => {
         fileManager.add(name, content);
     })
-    console.log(files);
 }
 
 module.exports = baseLogic;

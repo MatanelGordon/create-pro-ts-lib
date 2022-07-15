@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-const _ = require('lodash');
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const chalk = require('chalk');
 const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const FileManager = require('./utils/filesManager');
-const {optionsToPrompts, toYargsOptionsParam, OptionsHandler} = require('./utils/options');
+const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
 const {options} = config;
@@ -31,6 +30,8 @@ async function main(argv) {
     const optionsHandler = new OptionsHandler(options);
     const flags = optionsHandler.getFlags(argv);
     const cliOptions = optionsHandler.getOptions(argv);
+    const possibleOptions = new OptionsCollection().addAll(options);
+
 
     if (flags['all']) {
         // 'all' logic here
@@ -52,16 +53,27 @@ async function main(argv) {
 
     try {
         const formResults = await prompts(questions);
-        const selectedOptions = _.uniqBy([...cliOptions, ...formResults?.options ?? [],])
+        const selectedOptions = new OptionsCollection()
+            .addAll(cliOptions)
+            .addAll(formResults?.options ?? []);
 
-        console.log({selectedOptions})
+        const prettier = possibleOptions.getByName('prettier');
+        const eslint = possibleOptions.getByName('eslint');
+        const prettierEslint = possibleOptions.getByName('prettier-eslint');
+
+        if(selectedOptions.includesAll(prettier, eslint) || selectedOptions.includes(prettierEslint)){
+            selectedOptions
+                .remove(prettier)
+                .remove(eslint)
+                .add(prettierEslint)
+            return;
+        }
 
         await loadBaseLogic(filesManager, config);
-        await Promise.all(selectedOptions.map(option => option?.logic(filesManager, config)));
-
+        await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config)));
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
-            console.log(chalk.red(`ok nevermind...`));
+            console.log(chalk.red(`Ok nevermind...`));
             return;
         }
 

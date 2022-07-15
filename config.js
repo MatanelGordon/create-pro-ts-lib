@@ -3,6 +3,9 @@ const {eslint} = require('./logics');
 
 module.exports = {
     options: [
+        new Option('name', {isFlagOnly: true, type: 'string'})
+            .setDescription('Determines project name'),
+
         new Option('nodemon')
             .setDescription('Adds nodemon to your ts project')
             .setAlias('n'),
@@ -13,7 +16,7 @@ module.exports = {
             .setLogic(eslint),
 
         new Option('prettier')
-            .setDescription('Adds prettier to your ts project')
+            .setDescription('Adds prettier-eslint to your ts project')
             .setAlias('p'),
 
         new Option('tests')
@@ -21,12 +24,13 @@ module.exports = {
             .setAlias('t')
             .setInitialSelected(false),
 
+        new Option('prettier-eslint', {isFlagOnly: true})
+            .setDescription(' prettier and eslint (also works with --prettier --eslint)')
+            .setAlias('pe'),
+
         new Option('all', {isFlagOnly: true})
             .setDescription('ADDS ALL FEATURES TO YOUR TS PROJECT')
-            .setAlias('a'),
-
-        new Option('name', {isFlagOnly: true, type: 'string'})
-            .setDescription('Determines project name')
+            .setAlias('a')
     ],
     files: {
         rename: {
