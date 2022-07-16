@@ -36,7 +36,8 @@ module.exports = {
     files: {
         rename: {
             '_package.json': 'package.json',
-            '_gitignore': '.gitignore'
+            '_gitignore': '.gitignore',
+            'index-test-ts.txt': 'index.test.ts'
         }
     }
 }
