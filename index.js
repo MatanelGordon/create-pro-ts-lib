@@ -32,7 +32,6 @@ async function main(argv) {
     const cliOptions = optionsHandler.getOptions(argv);
     const possibleOptions = new OptionsCollection().addAll(options);
 
-
     if (flags['all']) {
         // 'all' logic here
         return;
@@ -66,7 +65,6 @@ async function main(argv) {
                 .remove(prettier)
                 .remove(eslint)
                 .add(prettierEslint)
-            return;
         }
 
         await loadBaseLogic(filesManager, config);

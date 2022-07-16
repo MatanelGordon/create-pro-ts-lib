@@ -4,6 +4,7 @@
     "lib": [
       "es2021"
     ],
+    "types": ["node"],
     "outDir": "dist",
     "baseUrl": ".",
     "module": "commonjs",

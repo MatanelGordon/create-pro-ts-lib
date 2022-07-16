@@ -2,5 +2,8 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "name": "base",
   "private": false,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "devDependencies": {
+    "typescript":"^4.7.4"
+  }
 }
