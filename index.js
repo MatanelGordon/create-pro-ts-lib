@@ -22,7 +22,7 @@ const resolveDirectory = argv => {
     if (dirs.length > 1) {
         throw new Error(`expected 1 directory, received ${dirs.length} - ${dirs}`);
     }
-    return dirs[0];
+    return dirs[0].trim();
 }
 
 async function main(argv) {
@@ -37,7 +37,6 @@ async function main(argv) {
         const all = possibleOptions.getByName('all');
         await all.logic(filesManager, config);
         postProcessFiles(filesManager);
-        console.log(filesManager.get('package.json'))
         return;
     }
 
@@ -71,11 +70,11 @@ async function main(argv) {
                 .remove(eslint)
                 .add(prettierEslint)
         }
+
         const optionsPayload = {dir, options:selectedOptions.list, name}
         await loadBaseLogic(filesManager, config, optionsPayload);
         await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, optionsPayload)));
-        postProcessFiles(filesManager);
-        // console.log(filesManager.get('package.json'))
+        await postProcessFiles(filesManager);
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
             console.log(chalk.red(`Ok nevermind...`));

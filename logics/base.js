@@ -11,6 +11,7 @@ const baseLogic = async (fileManager, config, options) => {
     const nodeVersion = +process.version.slice(1).split('.')[0];
 
     const dynamicPackageJson = {
+        name: options.name,
         devDependencies: {
             '@types/node': `^${nodeVersion}`
         }

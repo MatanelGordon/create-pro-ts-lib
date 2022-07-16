@@ -1,8 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "name": "base",
   "private": false,
   "version": "1.0.0",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json"
+  },
   "devDependencies": {
     "typescript":"^4.7.4"
   }

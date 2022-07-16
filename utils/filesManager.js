@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const path = require("path");
-const {sortJson} = require("./template");
 
 class FilesManager{
     #files;
@@ -14,13 +13,17 @@ class FilesManager{
     @param {object} config
      */
     constructor(dir, config) {
-        this.#path = path.isAbsolute(dir)? dir:path.join(__dirname, dir);
+        this.#path = path.isAbsolute(dir)? dir:path.join(__dirname,'../', dir);
         this.#files = new Map();
         this.#config = config;
     }
 
     get files(){
         return Object.fromEntries(Array.from(this.#files.entries()).map(([key, value]) => [path.join(this.#path, key),value]));
+    }
+
+    get path(){
+        return this.#path
     }
 
     /*
@@ -52,10 +55,6 @@ class FilesManager{
         console.log('added', fileName);
         this.#files.set(fileName, setterValue);
         return this;
-    }
-
-    has(path){
-        return this.#files.has(path);
     }
 
     get(filename){

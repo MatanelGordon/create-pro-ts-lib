@@ -1,47 +1,70 @@
 const _ = require("lodash");
 const path = require("path");
-const {readdir, readFile} = require("fs/promises");
+const {readdir, readFile, writeFile, mkdir} = require("fs/promises");
+
+const parseFile = (filePath, strContent) => {
+    let content = strContent;
+    if (path.extname(filePath) === '.json') {
+        content = JSON.parse(content);
+    }
+    return content;
+}
+
+const stringifyFile = (filePath, content) => {
+    let strContent = content;
+    if (path.extname(filePath) === '.json') {
+        strContent = JSON.stringify(content);
+    }
+    return strContent;
+}
 
 const readTemplateFiles = async (templatePath, config = {}) => {
     const filesNames = await readdir(templatePath);
     const filesPaths = filesNames.map(name => path.join(templatePath, name));
     const files = await Promise.all(_.zip(filesNames, filesPaths).map(async ([name, filePath]) => {
         const contentBuffer = await readFile(filePath);
-        let content = contentBuffer.toString('utf8');
-
-        if (path.extname(name) === '.json') {
-            content = JSON.parse(content);
-        }
+        const bufferStr = contentBuffer.toString('utf8');
+        const content = parseFile(name, bufferStr);
 
         return {
-            name,
-            path: filePath,
-            content
+            name, path: filePath, content
         };
     }))
 
-    return files.map(item =>
-        ({
-            ...item,
-            name: config?.files?.rename?.[item.name] ?? item.name
-        })
-    )
+    return files.map(item => ({
+        ...item, name: config?.files?.rename?.[item.name] ?? item.name
+    }))
 }
 
 function sortJson(deepObject) {
-    if(!deepObject) return {};
+    if (!deepObject) return {};
     return Object.entries(deepObject)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-        .reduce(
-            (acc, [key, value]) => ({
-                ...acc,
-                [key]: typeof value === "object" ? sortJson(value) : value
-            }),
-            {}
-        )
+        .reduce((acc, [key, value]) => ({
+            ...acc, [key]: typeof value === "object" ? sortJson(value) : value
+        }), {})
 }
 
-function postProcessFiles(filesManager){
+async function createFiles(filesManager) {
+    const filesEntries = Object.entries(filesManager.files);
+    const abortion = new AbortController();
+    const signal = abortion.signal;
+
+    process.on('SIGINT', () => {
+        abortion.abort();
+    })
+    console.log('creating files...')
+    await mkdir(path.dirname(filesManager.path));
+    await Promise.all(
+        filesEntries.map(([path, content]) => {
+            const strContent = stringifyFile(path, content);
+            return writeFile(path, strContent, {signal})
+        })
+    )
+    console.log('DONE!')
+}
+
+async function postProcessFiles(filesManager) {
     const packageJson = {...filesManager.get('package.json')};
     const tsconfig = filesManager.get('tsconfig.json');
 
@@ -53,6 +76,7 @@ function postProcessFiles(filesManager){
 
     filesManager.add('package.json', packageJson, true);
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
+    await createFiles(filesManager);
 }
 
 const createTemplateFilesDownloader = path => async (filesManager, config) => {
@@ -64,8 +88,5 @@ const createTemplateFilesDownloader = path => async (filesManager, config) => {
 }
 
 module.exports = {
-    readTemplateFiles,
-    sortJson,
-    postProcessFiles,
-    createTemplateFilesDownloader,
+    readTemplateFiles, sortJson, postProcessFiles, createTemplateFilesDownloader,
 }
