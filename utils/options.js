@@ -30,23 +30,30 @@ class OptionsHandler {
     options;
 
     constructor(options) {
-        this.options = options;
+        this.options = new OptionsCollection().addAll(options);
     }
 
     #getOptionsFromArgv(argv) {
-        return this.options.filter(option => argv[option.name]);
+        return Object
+            .entries(argv)
+            .filter(([arg]) => this.options.includes(arg))
+            .map(([name, value]) => ({
+                name,
+                argValue: value,
+                option: this.options.getByName(name)
+            }))
     }
 
     getFlags(argv) {
         const flags = this.#getOptionsFromArgv(argv);
-        return flags.filter(option => option.isFlagOnly).reduce((acc, curr) => ({
+        return flags.filter(({option}) => option.isFlagOnly).reduce((acc, curr) => ({
             ...acc, [curr.name]: curr
         }), {});
     }
 
     getOptions(argv) {
         const flags = this.#getOptionsFromArgv(argv);
-        return flags.filter(option => !option.isFlagOnly);
+        return flags.filter(({option}) => !option.isFlagOnly);
     }
 }
 

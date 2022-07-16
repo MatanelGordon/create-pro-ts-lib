@@ -30,7 +30,7 @@ async function main(argv) {
     const filesManager = new FileManager(dir);
     const optionsHandler = new OptionsHandler(options);
     const flags = optionsHandler.getFlags(argv);
-    const cliOptions = optionsHandler.getOptions(argv);
+    const cliOptions = optionsHandler.getOptions(argv).map(({option}) => option);
     const possibleOptions = new OptionsCollection().addAll(options);
 
     if (flags['all']) {
@@ -59,8 +59,8 @@ async function main(argv) {
         const selectedOptions = new OptionsCollection()
             .addAll(cliOptions)
             .addAll(formResults?.options ?? []);
-        console.log(flags['name'].name)
-        const name = formResults?.name ?? flags['name'];
+
+        const name = formResults?.name ?? argv.name;
         const prettier = possibleOptions.getByName('prettier');
         const eslint = possibleOptions.getByName('eslint');
         const prettierEslint = possibleOptions.getByName('prettier-eslint');
