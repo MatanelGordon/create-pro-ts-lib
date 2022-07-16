@@ -3,4 +3,4 @@ const TEMPLATE_PATH = 'templates/nodemon';
 
 const nodemonLogic = createTemplateFilesDownloader(TEMPLATE_PATH);
 
-module.exports = nodemonLogic;
+module.exports = {nodemonLogic, TEMPLATE_PATH};

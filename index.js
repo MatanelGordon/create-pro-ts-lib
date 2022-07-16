@@ -34,7 +34,10 @@ async function main(argv) {
     const possibleOptions = new OptionsCollection().addAll(options);
 
     if (flags['all']) {
-        // 'all' logic here
+        const all = possibleOptions.getByName('all');
+        await all.logic(filesManager, config);
+        postProcessFiles(filesManager);
+        console.log(filesManager.get('package.json'))
         return;
     }
 
@@ -56,7 +59,8 @@ async function main(argv) {
         const selectedOptions = new OptionsCollection()
             .addAll(cliOptions)
             .addAll(formResults?.options ?? []);
-
+        console.log(flags['name'].name)
+        const name = formResults?.name ?? flags['name'];
         const prettier = possibleOptions.getByName('prettier');
         const eslint = possibleOptions.getByName('eslint');
         const prettierEslint = possibleOptions.getByName('prettier-eslint');
@@ -67,11 +71,11 @@ async function main(argv) {
                 .remove(eslint)
                 .add(prettierEslint)
         }
-
-        await loadBaseLogic(filesManager, config);
-        await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, selectedOptions.list)));
+        const optionsPayload = {dir, options:selectedOptions.list, name}
+        await loadBaseLogic(filesManager, config, optionsPayload);
+        await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, optionsPayload)));
         postProcessFiles(filesManager);
-        console.log(filesManager.get('package.json'))
+        // console.log(filesManager.get('package.json'))
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
             console.log(chalk.red(`Ok nevermind...`));

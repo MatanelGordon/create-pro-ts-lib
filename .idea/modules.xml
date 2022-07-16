@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/create-pro-ts-lib.iml" filepath="$PROJECT_DIR$/.idea/create-pro-ts-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../rust-result-js/.idea/rust-result-js.iml" filepath="$PROJECT_DIR$/../rust-result-js/.idea/rust-result-js.iml" />
     </modules>
   </component>
 </project>
