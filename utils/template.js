@@ -20,18 +20,27 @@ const readTemplateFiles = async (templatePath, config = {}) => {
         };
     }))
 
-    return files.reduce(
-        (acc, curr) => {
-            const fileName = config?.files?.rename?.[curr.name] ?? curr.name
-            return {
+    return files.map(item =>
+        ({
+            ...item,
+            name: config?.files?.rename?.[item.name] ?? item.name
+        })
+    )
+}
+
+function sortJson(deepObject) {
+    return Object.entries(deepObject)
+        .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+        .reduce(
+            (acc, [key, value]) => ({
                 ...acc,
-                [fileName]: curr.content
-            }
-        },
-        {}
-    );
+                [key]: typeof value === "object" ? sortJson(value) : value
+            }),
+            {}
+        )
 }
 
 module.exports = {
-    readTemplateFiles
+    readTemplateFiles,
+    sortJson
 }

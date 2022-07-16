@@ -1,5 +1,5 @@
 const {Option} = require('./utils/options');
-const {eslint} = require('./logics');
+const {eslint, nodemon} = require('./logics');
 
 module.exports = {
     options: [
@@ -8,7 +8,8 @@ module.exports = {
 
         new Option('nodemon')
             .setDescription('Adds nodemon to your ts project')
-            .setAlias('n'),
+            .setAlias('n')
+            .setLogic(nodemon),
 
         new Option('eslint')
             .setDescription('Adds eslint to your ts project')
