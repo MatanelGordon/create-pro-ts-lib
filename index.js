@@ -7,6 +7,7 @@ const FileManager = require('./utils/filesManager');
 const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
+const {postProcessFiles} = require("./utils/template");
 const {options} = config;
 
 const mainCommand = yargs(hideBin(process.argv))
@@ -68,7 +69,9 @@ async function main(argv) {
         }
 
         await loadBaseLogic(filesManager, config);
-        await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config)));
+        await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, selectedOptions.list)));
+        postProcessFiles(filesManager);
+        console.log(filesManager.get('package.json'))
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
             console.log(chalk.red(`Ok nevermind...`));

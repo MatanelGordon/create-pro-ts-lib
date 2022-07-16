@@ -1,7 +1,7 @@
 const {readTemplateFiles} = require("../utils/template");
 
 const TEMPLATE_PATH = 'templates/base';
-const baseLogic = async (fileManager, config) => {
+const baseLogic = async (fileManager, config, options) => {
     const files = await readTemplateFiles(TEMPLATE_PATH, config);
 
     files.forEach(({name, content}) => {

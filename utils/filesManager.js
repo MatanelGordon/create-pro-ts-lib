@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const path = require("path");
+const {sortJson} = require("./template");
 
 class FilesManager{
     #files;
@@ -28,13 +29,13 @@ class FilesManager{
     @param {object} object - json object to merge with existing configuration
     @returns the current instance to allow chaining
      */
-    add(fileName, value){
+    add(fileName, value, force=false){
         const isJson = path.extname(fileName) === '.json'
         const isIgnoreFile = /^\.\w+ignore$/.test(path.basename(fileName));
         const currentValue = this.#files.get(fileName);
         let setterValue = value;
 
-        if(isJson){
+        if(!force && isJson){
             const currentObject = currentValue ?? {};
 
             if(!(typeof currentObject === "object" && typeof value === "object")){
@@ -42,8 +43,10 @@ class FilesManager{
             }
             setterValue = _.merge(currentObject, value);
         }
-        else if(currentValue && isIgnoreFile){
-            setterValue = [currentValue, value].join('\n');
+        else if(!force && currentValue && isIgnoreFile){
+            setterValue = [currentValue, value]
+                .map(content => content.trim())
+                .join('\n');
         }
 
         console.log('added', fileName);
@@ -53,6 +56,10 @@ class FilesManager{
 
     has(path){
         return this.#files.has(path);
+    }
+
+    get(filename){
+        return this.#files.get(filename);
     }
 }
 

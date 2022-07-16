@@ -1,6 +1,6 @@
+const _ = require("lodash");
 const path = require("path");
 const {readdir, readFile} = require("fs/promises");
-const _ = require("lodash");
 
 const readTemplateFiles = async (templatePath, config = {}) => {
     const filesNames = await readdir(templatePath);
@@ -29,6 +29,7 @@ const readTemplateFiles = async (templatePath, config = {}) => {
 }
 
 function sortJson(deepObject) {
+    if(!deepObject) return {};
     return Object.entries(deepObject)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
         .reduce(
@@ -40,7 +41,31 @@ function sortJson(deepObject) {
         )
 }
 
+function postProcessFiles(filesManager){
+    const packageJson = {...filesManager.get('package.json')};
+    const tsconfig = filesManager.get('tsconfig.json');
+
+    const keysToSort = ['devDependencies', 'dependencies', 'scripts'];
+
+    for (const key of keysToSort) {
+        packageJson[key] = sortJson(packageJson[key]);
+    }
+
+    filesManager.add('package.json', packageJson, true);
+    filesManager.add('tsconfig.json', sortJson(tsconfig), true);
+}
+
+const createTemplateFilesDownloader = path => async (filesManager, config) => {
+    const files = await readTemplateFiles(path, config);
+
+    files.forEach(({name, content}) => {
+        filesManager.add(name, content);
+    })
+}
+
 module.exports = {
     readTemplateFiles,
-    sortJson
+    sortJson,
+    postProcessFiles,
+    createTemplateFilesDownloader,
 }

@@ -72,7 +72,7 @@ class OptionsCollection {
         return this;
     }
 
-    addAll(options){
+    addAll(options) {
         this.add(...options);
         return this;
     }
@@ -96,7 +96,7 @@ class OptionsCollection {
         return options.length !== 0 && options.reduce((acc, curr) => acc && this.includes(curr), true);
     }
 
-    getByName(name){
+    getByName(name) {
         return this.#options.find(option => option.name === name);
     }
 }
@@ -104,6 +104,7 @@ class OptionsCollection {
 /**
  * Represents an option.
  */
+
 class Option {
     static #initialOptions = {type: 'boolean', isFlagOnly: false};
 
@@ -111,8 +112,7 @@ class Option {
     #name;
     #isFlagOnly;
     #initialSelected;
-    #logic = () => {
-    };
+    #logic
 
     constructor(name, options = {}) {
 
@@ -135,6 +135,9 @@ class Option {
     }
 
     get logic() {
+        if(!this.#logic){
+            throw new Error(`Logic not implemented in ${this.name}. Use option.setLogic(cb) to prevent this error.`)
+        }
         return this.#logic;
     }
 
@@ -172,9 +175,5 @@ class Option {
 }
 
 module.exports = {
-    optionsToPrompts,
-    toYargsOptionsParam,
-    OptionsHandler,
-    Option,
-    OptionsCollection
+    optionsToPrompts, toYargsOptionsParam, OptionsHandler, Option, OptionsCollection
 };

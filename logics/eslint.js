@@ -1,12 +1,5 @@
-const {readTemplateFiles} = require("../utils/template");
+const {readTemplateFiles, createTemplateFilesDownloader} = require("../utils/template");
 
 const TEMPLATE_PATH = 'templates/eslint';
-async function eslintLogic(fileManager, config = {}){
-    const files = await readTemplateFiles(TEMPLATE_PATH, config);
-
-    files.forEach(({name, content}) => {
-        fileManager.add(name, content);
-    })
-}
-
+const eslintLogic = createTemplateFilesDownloader(TEMPLATE_PATH);
 module.exports = eslintLogic;

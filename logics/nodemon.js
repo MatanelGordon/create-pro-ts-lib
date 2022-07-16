@@ -1,13 +1,6 @@
-const {readTemplateFiles} = require("../utils/template");
+const {createTemplateFilesDownloader} = require("../utils/template");
 const TEMPLATE_PATH = 'templates/nodemon';
 
-const nodemonLogic = async (filesManager, config = {}) => {
-    const files = await readTemplateFiles(TEMPLATE_PATH, config);
-
-    for (const {name, content} of files) {
-        filesManager.add(name, content);
-    }
-    console.log(filesManager.files)
-}
+const nodemonLogic = createTemplateFilesDownloader(TEMPLATE_PATH);
 
 module.exports = nodemonLogic;
