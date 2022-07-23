@@ -3,11 +3,12 @@ const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const chalk = require('chalk');
 const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
-const FileManager = require('./utils/filesManager');
-const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
+const FileManager = require('./utils/filesManager');
+const resolveDirectory = require('./utils/resolveDirectory');
 const {postProcessFiles} = require("./utils/template");
+const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
 
 const {options} = config;
 
@@ -17,14 +18,6 @@ const mainCommand = yargs(hideBin(process.argv))
     .version('1.0.0')
     .options(toYargsOptionsParam(options))
     .positional('directory', {describe: 'A directory where you want initialize your ts project', type: 'string'})
-
-const resolveDirectory = argv => {
-    const dirs = argv._;
-    if (dirs.length > 1) {
-        throw new Error(`expected 1 directory, received ${dirs.length} - ${dirs}`);
-    }
-    return dirs[0].trim();
-}
 
 const getOptionByName = name => options.find(op => op.name === name);
 
@@ -86,5 +79,6 @@ async function main(argv) {
     }
 }
 
+// Running the code
 void main(mainCommand.argv);
 
