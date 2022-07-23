@@ -90,7 +90,7 @@ class OptionsCollection {
         return this;
     }
 
-    includes(option) {
+    #includes(option){
         if (option instanceof Option) {
             return this.#options.includes(option);
         } else if (typeof option === 'string') {
@@ -99,8 +99,10 @@ class OptionsCollection {
         throw new Error(`parameter "option" doesnt have a valid type: ${typeof option}`);
     }
 
-    includesAll(...options) {
-        return options.length !== 0 && options.reduce((acc, curr) => acc && this.includes(curr), true);
+    includes(...options) {
+        options.reduce((acc,curr) => {
+            acc && this.#includes(curr);
+        }, true)
     }
 
     getByName(name) {
