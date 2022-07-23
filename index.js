@@ -8,6 +8,7 @@ const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection}
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
 const {postProcessFiles} = require("./utils/template");
+
 const {options} = config;
 
 const mainCommand = yargs(hideBin(process.argv))
@@ -25,18 +26,19 @@ const resolveDirectory = argv => {
     return dirs[0].trim();
 }
 
+const getOptionByName = name => options.find(op => op.name === name);
+
 async function main(argv) {
     const dir = resolveDirectory(argv);
     const filesManager = new FileManager(dir);
     const optionsHandler = new OptionsHandler(options);
     const flags = optionsHandler.getFlags(argv);
     const cliOptions = optionsHandler.getOptions(argv).map(({option}) => option);
-    const possibleOptions = new OptionsCollection().addAll(options);
 
     if (flags['all']) {
-        const all = possibleOptions.getByName('all');
+        const all = getOptionByName('all');
         await all.logic(filesManager, config);
-        postProcessFiles(filesManager);
+        await postProcessFiles(filesManager);
         return;
     }
 
@@ -60,11 +62,11 @@ async function main(argv) {
             .addAll(formResults?.options ?? []);
 
         const name = formResults?.name ?? argv.name;
-        const prettier = possibleOptions.getByName('prettier');
-        const eslint = possibleOptions.getByName('eslint');
-        const prettierEslint = possibleOptions.getByName('prettier-eslint');
+        const prettier = getOptionByName('prettier');
+        const eslint = getOptionByName('eslint');
+        const prettierEslint = getOptionByName('prettier-eslint');
 
-        if(selectedOptions.includesAll(prettier, eslint) || selectedOptions.includes(prettierEslint)){
+        if(selectedOptions.includes(prettier, eslint) || selectedOptions.includes(prettierEslint)){
             selectedOptions
                 .remove(prettier)
                 .remove(eslint)
@@ -80,7 +82,6 @@ async function main(argv) {
             console.log(chalk.red(`Ok nevermind...`));
             return;
         }
-
         throw e;
     }
 }
