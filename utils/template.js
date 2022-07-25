@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const path = require("path");
 const {readdir, readFile, writeFile, mkdir} = require("fs/promises");
+const {existsSync} = require("fs");
 
 const parseFile = (filePath, strContent) => {
     let content = strContent;
@@ -13,7 +14,7 @@ const parseFile = (filePath, strContent) => {
 const stringifyFile = (filePath, content) => {
     let strContent = content;
     if (path.extname(filePath) === '.json') {
-        strContent = JSON.stringify(content);
+        strContent = JSON.stringify(content, null, 4);
     }
     return strContent;
 }
@@ -31,41 +32,81 @@ const readTemplateFiles = async (templatePath, config = {}) => {
         };
     }))
 
-    return files.map(item => ({
-        ...item, name: config?.files?.rename?.[item.name] ?? item.name
-    }))
+    return files.map(item => (
+        {
+            ...item, name: config?.files?.rename?.[item.name] ?? item.name
+        }
+    ))
 }
 
 function sortJson(deepObject) {
     if (!deepObject) return {};
     return Object.entries(deepObject)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-        .reduce((acc, [key, value]) => ({
-            ...acc, [key]: typeof value === "object" ? sortJson(value) : value
-        }), {})
+        .reduce((acc, [key, value]) => (
+            {
+                ...acc, [key]: typeof value === "object" ? sortJson(value) : value
+            }
+        ), {})
 }
 
+function sortPackageJsonObj(packageJson) {
+    return [
+        '$schema',
+        'name',
+        'version',
+        'description',
+        'private',
+        'main',
+        'scripts',
+        'repository',
+        'keywords',
+        'author',
+        'licence',
+        'bugs',
+        'homepage',
+        'dependencies',
+        'devDependencies'
+    ].reduce(
+        (obj, key) => Object.assign(obj, {[key]: packageJson[key]}),
+        {}
+    )
+}
+
+// todo: make it to create the files themselves [ongoing]
 async function createFiles(filesManager) {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
     const signal = abortion.signal;
 
-    process.on('SIGINT', () => {
+    const onCancel = () => {
         abortion.abort();
-    })
-    console.log('creating files...')
-    await mkdir(path.dirname(filesManager.path));
-    await Promise.all(
-        filesEntries.map(([path, content]) => {
-            const strContent = stringifyFile(path, content);
-            return writeFile(path, strContent, {signal})
-        })
-    )
-    console.log('DONE!')
+    }
+
+    process.once('SIGINT', onCancel);
+    console.log(`path: ${filesManager.path}`)
+
+    try {
+        if (existsSync(filesManager.path)) {
+            console.error(`ERROR! ${filesManager.path} already exists!`);
+        }
+
+        await mkdir(filesManager.path, {recursive: true});
+        await Promise.all(
+            filesEntries.map(([path, content]) => {
+                const strContent = stringifyFile(path, content);
+                return writeFile(path, strContent, {signal})
+            })
+        )
+    } catch (e) {
+        abortion.abort();
+    }
+
+    console.log('ENJOY!')
 }
 
 async function postProcessFiles(filesManager) {
-    const packageJson = {...filesManager.get('package.json')};
+    const packageJson = sortPackageJsonObj({...filesManager.get('package.json')});
     const tsconfig = filesManager.get('tsconfig.json');
 
     const keysToSort = ['devDependencies', 'dependencies', 'scripts'];
@@ -88,5 +129,5 @@ const createTemplateFilesDownloader = path => async (filesManager, config) => {
 }
 
 module.exports = {
-    readTemplateFiles, sortJson, postProcessFiles, createTemplateFilesDownloader,
+    readTemplateFiles, postProcessFiles, createTemplateFilesDownloader,
 }
