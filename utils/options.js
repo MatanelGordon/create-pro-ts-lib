@@ -3,11 +3,10 @@ const _ = require("lodash");
 const toYargsOptionsParam = options => options.reduce((acc, option) => {
     const name = option.name;
     const yargsSettings = option.yargsSettings;
-    return {
-        ...acc, [name]: yargsSettings
-    };
+    return Object.assign(acc, {[name]: yargsSettings});
 }, {})
 
+//todo: Add color to each option in promts, already imp'd in Option
 const optionsToPrompts = (options) => ({
     type: 'multiselect',
     name: 'options',
@@ -16,46 +15,14 @@ const optionsToPrompts = (options) => ({
     instructions: false,
     min: 1,
     choices: options
-        .filter(option => !option.isFlagOnly)
+        .filter(option => option.visible)
         .map(option => ({
-            title: option.name, selected: option.initialSelected, value: option
+            title: option.name,
+            selected: option.initialSelected,
+            value: option,
+
         }))
 })
-
-
-/*
-Allows extracting options according to argv
- */
-class OptionsHandler {
-    options;
-
-    constructor(options) {
-        this.options = new OptionsCollection().addAll(options);
-    }
-
-    #getOptionsFromArgv(argv) {
-        return Object
-            .entries(argv)
-            .filter(([arg]) => this.options.includes(arg))
-            .map(([name, value]) => ({
-                name,
-                argValue: value,
-                option: this.options.getByName(name)
-            }))
-    }
-
-    getFlags(argv) {
-        const flags = this.#getOptionsFromArgv(argv);
-        return flags.filter(({option}) => option.isFlagOnly).reduce((acc, curr) => ({
-            ...acc, [curr.name]: curr
-        }), {});
-    }
-
-    getOptions(argv) {
-        const flags = this.#getOptionsFromArgv(argv);
-        return flags.filter(({option}) => !option.isFlagOnly);
-    }
-}
 
 /*
 handles collections for options
@@ -69,6 +36,7 @@ class OptionsCollection {
 
     add(...options) {
         for (const option of options) {
+            console.log({option: option.toString()})
             if (!option instanceof Option) {
                 throw new Error('inserted Option that is not of type Option')
             }
@@ -90,7 +58,12 @@ class OptionsCollection {
         return this;
     }
 
-    #includes(option){
+    removeAll(){
+        _.remove(this.#options, _ => true);
+        return this;
+    }
+
+    #isOptionInList(option) {
         if (option instanceof Option) {
             return this.#options.includes(option);
         } else if (typeof option === 'string') {
@@ -100,13 +73,14 @@ class OptionsCollection {
     }
 
     includes(...options) {
-        options.reduce((acc,curr) => {
-            acc && this.#includes(curr);
+        options.reduce((acc, curr) => {
+            console.log(curr);
+            acc && this.#isOptionInList(curr);
         }, true)
     }
 
-    getByName(name) {
-        return this.#options.find(option => option.name === name);
+    findByName(name){
+        return this.#options.find(opt => opt.name === name);
     }
 }
 
@@ -115,23 +89,25 @@ class OptionsCollection {
  */
 
 class Option {
-    static #initialOptions = {type: 'boolean', isFlagOnly: false};
+    static #initialOptions = {type: 'boolean', visible:true};
 
     #yargsSettings = {}
     #name;
-    #isFlagOnly;
     #initialSelected;
-    #logic
+    #logic;
+    #visible;
+    #color;
 
     constructor(name, options = {}) {
 
-        const {type, isFlagOnly} = {
+        const {type, visible, color} = {
             ...Option.#initialOptions, ...options
         }
 
         this.#name = name;
-        this.#isFlagOnly = isFlagOnly;
         this.#yargsSettings.type = type;
+        this.#visible = visible;
+        this.#color = color;
         this.#initialSelected = true;
     }
 
@@ -144,18 +120,22 @@ class Option {
     }
 
     get logic() {
-        if(!this.#logic){
+        if (!this.#logic) {
             throw new Error(`Logic not implemented in ${this.name}. Use option.setLogic(cb) to prevent this error.`)
         }
         return this.#logic;
     }
 
-    get isFlagOnly() {
-        return this.#isFlagOnly;
-    }
-
     get initialSelected() {
         return this.#initialSelected;
+    }
+
+    get visible(){
+        return this.#visible;
+    }
+
+    get color(){
+        return this.#color;
     }
 
     setAlias(alias) {
@@ -184,5 +164,5 @@ class Option {
 }
 
 module.exports = {
-    optionsToPrompts, toYargsOptionsParam, OptionsHandler, Option, OptionsCollection
+    optionsToPrompts, toYargsOptionsParam, Option, OptionsCollection
 };
