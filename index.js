@@ -6,9 +6,10 @@ const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
 const FileManager = require('./utils/filesManager');
-const resolveDirectory = require('./utils/resolveDirectory');
+const {resolveDirectory, ArgumentExtractor} = require('./utils/arguments');
 const {postProcessFiles} = require("./utils/template");
 const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
+const _ = require("lodash");
 
 const {options} = config;
 
@@ -19,21 +20,22 @@ const mainCommand = yargs(hideBin(process.argv))
     .options(toYargsOptionsParam(options))
     .positional('directory', {describe: 'A directory where you want initialize your ts project', type: 'string'})
 
-const getOptionByName = name => options.find(op => op.name === name);
+
+// todo: create wanted behaviour
+// npm create pro-ts-lib my-dir -e -n --name matanel - should not ask anything
+// npm create pro-ts-lib myDir --all - should only ask for name
 
 async function main(argv) {
     const dir = resolveDirectory(argv);
     const filesManager = new FileManager(dir);
-    const optionsHandler = new OptionsHandler(options);
-    const flags = optionsHandler.getFlags(argv);
-    const cliOptions = optionsHandler.getOptions(argv).map(({option}) => option);
-
-    if (flags['all']) {
-        const all = getOptionByName('all');
-        await all.logic(filesManager, config);
-        await postProcessFiles(filesManager);
-        return;
-    }
+    const argumentExtractor = new ArgumentExtractor(config);
+    const allOptions = new OptionsCollection().addAll(options);
+    const flags = argumentExtractor.getFlags(argv);
+    const cliOptions = argumentExtractor.getOptions(argv);
+    console.log({
+        cliOptions : cliOptions.map(x => x.toString()),
+        flags: _.mapValues(flags, x => x.toString()),
+    });
 
     //build questions
     const questions = []
@@ -44,7 +46,7 @@ async function main(argv) {
         })
     }
 
-    if (cliOptions.length === 0) {
+    if (cliOptions.length === 0 && !flags['all']) {
         questions.push(optionsToPrompts(options));
     }
 
@@ -55,15 +57,23 @@ async function main(argv) {
             .addAll(formResults?.options ?? []);
 
         const name = formResults?.name ?? argv.name;
-        const prettier = getOptionByName('prettier');
-        const eslint = getOptionByName('eslint');
-        const prettierEslint = getOptionByName('prettier-eslint');
+        const prettier = allOptions.findByName('prettier');
+        const eslint = allOptions.findByName('eslint');
+        const prettierEslint = allOptions.findByName('prettier-eslint');
 
         if(selectedOptions.includes(prettier, eslint) || selectedOptions.includes(prettierEslint)){
             selectedOptions
                 .remove(prettier)
                 .remove(eslint)
                 .add(prettierEslint)
+        }
+
+        const allFeaturesFlag = flags['all'];
+
+        if(allFeaturesFlag){
+            selectedOptions
+                .removeAll()
+                .add(allFeaturesFlag)
         }
 
         const optionsPayload = {dir, options:selectedOptions.list, name}
