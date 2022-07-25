@@ -8,9 +8,6 @@ const {allLogic} = require("./logics/all");
 
 module.exports = {
     options: [
-        new Option('name', {isFlagOnly: true, type: 'string'})
-            .setDescription('Determines project name'),
-
         new Option('nodemon')
             .setDescription('Adds nodemon to your ts project')
             .setAlias('n')
@@ -32,15 +29,19 @@ module.exports = {
             .setInitialSelected(false)
             .setLogic(testsLogic),
 
-        new Option('prettier-eslint', {isFlagOnly: true})
+        new Option('prettier-eslint', {visible: false})
             .setDescription('Prettier and Eslint (also works with --prettier --eslint)')
             .setAlias('pe')
             .setLogic(prettierEslintLogic),
-
-        new Option('all', {isFlagOnly: true})
+    ],
+    flags: [
+        new Option('all')
             .setDescription('ADDS ALL FEATURES TO YOUR TS PROJECT')
             .setAlias('a')
-            .setLogic(allLogic)
+            .setLogic(allLogic),
+
+        new Option('name', {type: 'string'})
+            .setDescription('Determines project name'),
     ],
     files: {
         rename: {
