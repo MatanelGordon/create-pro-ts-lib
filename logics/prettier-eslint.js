@@ -6,6 +6,7 @@ const prettierEslintLogic = async (filesManager, config) => {
     const prettierEslintFiles = await readTemplateFiles(TEMPLATE_PATH, config);
     const prettierFiles = await readTemplateFiles('templates/prettier', config);
     const eslintFiles = await readTemplateFiles('templates/eslint', config);
+
     _.remove(eslintFiles, ({name}) => name === '.eslintrc.cjs');
 
     [
