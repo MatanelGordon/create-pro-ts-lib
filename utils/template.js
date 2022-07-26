@@ -89,6 +89,7 @@ async function createFiles(filesManager) {
     try {
         if (existsSync(filesManager.path)) {
             console.error(`ERROR! ${filesManager.path} already exists!`);
+            return;
         }
 
         await mkdir(filesManager.path, {recursive: true});
