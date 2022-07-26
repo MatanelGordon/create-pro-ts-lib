@@ -2,14 +2,14 @@
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const chalk = require('chalk');
+const _ = require("lodash");
 const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
 const FileManager = require('./utils/filesManager');
 const {resolveDirectory, ArgumentExtractor} = require('./utils/arguments');
 const {postProcessFiles} = require("./utils/template");
-const {optionsToPrompts, toYargsOptionsParam, OptionsHandler, OptionsCollection} = require('./utils/options');
-const _ = require("lodash");
+const {optionsToPrompts, toYargsOptionsParam, OptionsCollection} = require('./utils/options');
 
 const {options} = config;
 
