@@ -6,7 +6,7 @@ const _ = require("lodash");
 const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
-const FileManager = require('./utils/filesManager');
+const FileManager = require('./utils/FilesManager');
 const {resolveDirectory, ArgumentExtractor} = require('./utils/arguments');
 const {postProcessFiles} = require("./utils/template");
 const {optionsToPrompts, toYargsOptionsParam, OptionsCollection} = require('./utils/options');
@@ -34,6 +34,7 @@ async function main(argv) {
     const flags = argumentExtractor.getFlags(argv);
     const cliOptions = argumentExtractor.getOptions(argv);
 
+    //todo: delete
     console.log({
         cliOptions : cliOptions.map(x => x.toString()),
         flags: _.mapValues(flags, x => x.toString()),

@@ -1,5 +1,5 @@
-const _ = require('lodash');
 const path = require("path");
+const merge = require('deepmerge');
 
 class FilesManager{
     #files;
@@ -10,7 +10,7 @@ class FilesManager{
     Manages File Configurations
     @constructor
     @param {string} dir - The Directory name
-    @param {object} config
+    @param {object} config -  App configuration
      */
     constructor(dir, config) {
         this.#path = path.isAbsolute(dir)? dir:path.join(__dirname,'../', dir);
@@ -44,7 +44,7 @@ class FilesManager{
             if(!(typeof currentObject === "object" && typeof value === "object")){
                 throw new Error('Could Not merge if current value or new Value are not typeof object');
             }
-            setterValue = _.merge(currentObject, value);
+            setterValue = merge(currentObject, value);
         }
         else if(!force && currentValue && isIgnoreFile){
             setterValue = [currentValue, value]
