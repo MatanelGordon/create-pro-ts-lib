@@ -29,9 +29,11 @@ async function main(argv) {
     const dir = resolveDirectory(argv);
     const filesManager = new FileManager(dir);
     const argumentExtractor = new ArgumentExtractor(config);
-    const allOptions = new OptionsCollection().addAll(options);
+    const allOptions = new OptionsCollection()
+        .addAll(options);
     const flags = argumentExtractor.getFlags(argv);
     const cliOptions = argumentExtractor.getOptions(argv);
+
     console.log({
         cliOptions : cliOptions.map(x => x.toString()),
         flags: _.mapValues(flags, x => x.toString()),
@@ -80,6 +82,7 @@ async function main(argv) {
         await loadBaseLogic(filesManager, config, optionsPayload);
         await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, optionsPayload)));
         await postProcessFiles(filesManager);
+
     } catch (e) {
         if(e?.code === CANCELLED_REQUEST){
             console.log(chalk.red(`Ok nevermind...`));
