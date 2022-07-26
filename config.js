@@ -5,27 +5,32 @@ const {eslintLogic} = require("./logics/eslint");
 const {testsLogic} = require("./logics/tests");
 const {prettierEslintLogic} = require("./logics/prettier-eslint");
 const {allLogic} = require("./logics/all");
+const chalk = require("chalk");
 
 module.exports = {
     options: [
         new Option('nodemon')
             .setDescription('Adds nodemon to your ts project')
             .setAlias('n')
+            .setColor(chalk.red)
             .setLogic(nodemonLogic),
 
         new Option('eslint')
             .setDescription('Adds eslint to your ts project')
             .setAlias('e')
+            .setColor('#ff6500')
             .setLogic(eslintLogic),
 
         new Option('prettier')
             .setDescription('Adds prettier-eslint to your ts project')
             .setAlias('p')
+            .setColor(chalk.yellow)
             .setLogic(prettierLogic),
 
         new Option('tests')
             .setDescription('Adds tests to your ts project')
             .setAlias('t')
+            .setColor(chalk.green)
             .setInitialSelected(false)
             .setLogic(testsLogic),
 

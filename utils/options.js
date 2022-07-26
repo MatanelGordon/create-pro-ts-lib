@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const chalk = require("chalk");
 
 const toYargsOptionsParam = options => options.reduce((acc, option) => {
     const name = option.name;
@@ -17,10 +18,9 @@ const optionsToPrompts = (options) => ({
     choices: options
         .filter(option => option.visible)
         .map(option => ({
-            title: option.name,
+            title: option?.color?.(option.name) ?? option.name,
             selected: option.initialSelected,
             value: option,
-
         }))
 })
 
@@ -155,6 +155,20 @@ class Option {
 
     setLogic(logicFunc) {
         this.#logic = logicFunc;
+        return this;
+    }
+
+    setColor(color){
+        let colorValue = color;
+
+        if(typeof color === "string" && color.charAt(0) === '#'){
+            colorValue  = chalk.hex(color);
+        }
+        else if(typeof color !== "function"){
+            throw new Error('Color must be a chalk or kolorist color');
+        }
+
+        this.#color = colorValue;
         return this;
     }
 
