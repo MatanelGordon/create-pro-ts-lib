@@ -2,7 +2,6 @@
 const yargs = require('yargs');
 const {hideBin} = require('yargs/helpers');
 const chalk = require('chalk');
-const _ = require("lodash");
 const {promptsWrapper: prompts, CANCELLED_REQUEST} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base')
@@ -10,6 +9,7 @@ const FileManager = require('./utils/FilesManager');
 const {resolveDirectory, ArgumentExtractor} = require('./utils/arguments');
 const {postProcessFiles} = require("./utils/template");
 const {optionsToPrompts, toYargsOptionsParam, OptionsCollection} = require('./utils/options');
+const Loader = require('./utils/Loader');
 
 const {options} = config;
 
@@ -21,10 +21,6 @@ const mainCommand = yargs(hideBin(process.argv))
     .positional('directory', {describe: 'A directory where you want initialize your ts project', type: 'string'})
 
 
-// todo: create wanted behaviour
-// npm create pro-ts-lib my-dir -e -n --name matanel - should not ask anything
-// npm create pro-ts-lib myDir --all - should only ask for name
-
 async function main(argv) {
     const dir = resolveDirectory(argv);
     const filesManager = new FileManager(dir);
@@ -33,12 +29,8 @@ async function main(argv) {
         .addAll(options);
     const flags = argumentExtractor.getFlags(argv);
     const cliOptions = argumentExtractor.getOptions(argv);
-
-    //todo: delete
-    console.log({
-        cliOptions : cliOptions.map(x => x.toString()),
-        flags: _.mapValues(flags, x => x.toString()),
-    });
+    //todo: use loader for better output
+    const loader = await new Loader().init();
 
     //build questions
     const questions = []
@@ -71,12 +63,12 @@ async function main(argv) {
                 .add(prettierEslint)
         }
 
-        const allFeaturesFlag = flags['all'];
+        const allFlag = flags['all'];
 
-        if(allFeaturesFlag){
+        if(allFlag){
             selectedOptions
                 .removeAll()
-                .add(allFeaturesFlag)
+                .add(allFlag)
         }
 
         const optionsPayload = {dir, options:selectedOptions.list, name}
