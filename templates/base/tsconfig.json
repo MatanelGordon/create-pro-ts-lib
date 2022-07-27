@@ -29,10 +29,10 @@
     "removeComments": false
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    "lib/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-
+    "node_modules"
   ]
 }
