@@ -7,7 +7,6 @@ const toYargsOptionsParam = options => options.reduce((acc, option) => {
     return Object.assign(acc, {[name]: yargsSettings});
 }, {})
 
-//todo: Add color to each option in promts, already imp'd in Option
 const optionsToPrompts = (options) => ({
     type: 'multiselect',
     name: 'options',
@@ -36,7 +35,6 @@ class OptionsCollection {
 
     add(...options) {
         for (const option of options) {
-            console.log({option: option.toString()})
             if (!option instanceof Option) {
                 throw new Error('inserted Option that is not of type Option')
             }
@@ -73,10 +71,9 @@ class OptionsCollection {
     }
 
     includes(...options) {
-        options.reduce((acc, curr) => {
-            console.log(curr);
-            acc && this.#isOptionInList(curr);
-        }, true)
+        options.reduce((acc, curr) =>
+            acc && this.#isOptionInList(curr)
+        , true)
     }
 
     findByName(name){
