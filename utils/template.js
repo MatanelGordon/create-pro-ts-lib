@@ -39,19 +39,28 @@ const readTemplateFiles = async (templatePath, config = {}) => {
     ))
 }
 
-function sortJson(deepObject) {
+function sortJson(deepObject, enableSortArrays = true) {
     if (!deepObject) return {};
     return Object.entries(deepObject)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-        .reduce((acc, [key, value]) => (
-            {
-                ...acc, [key]: typeof value === "object" ? sortJson(value) : value
+        .reduce((acc, [key, value]) => {
+            let newValue = value;
+
+            const isObject = typeof value === 'object';
+            const isArray = Array.isArray(value);
+
+            if (isObject && !isArray) {
+                newValue = sortJson(value, enableSortArrays);
+            } else if (isArray && enableSortArrays) {
+                newValue = value.sort((objA, objB) => JSON.stringify(objA).localeCompare(JSON.stringify(objB)));
             }
-        ), {})
+
+            return {...acc, [key]: newValue}
+        }, {})
 }
 
 function sortPackageJsonObj(packageJson) {
-    return [
+    const sortedPackageJson = [
         '$schema',
         'name',
         'version',
@@ -67,13 +76,16 @@ function sortPackageJsonObj(packageJson) {
         'homepage',
         'dependencies',
         'devDependencies'
-    ].reduce(
-        (obj, key) => Object.assign(obj, {[key]: packageJson[key]}),
-        {}
-    )
+    ].reduce((obj, key) => Object.assign(obj, {[key]: packageJson[key]}), {});
+
+    //sort json of specific keys
+    ['devDependencies', 'dependencies', 'scripts'].forEach(key => {
+        sortedPackageJson[key] = sortJson(packageJson[key]);
+    })
+
+    return sortedPackageJson;
 }
 
-// todo: make it to create the files themselves [ongoing]
 async function createFiles(filesManager) {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
@@ -93,12 +105,10 @@ async function createFiles(filesManager) {
         }
 
         await mkdir(filesManager.path, {recursive: true});
-        await Promise.all(
-            filesEntries.map(([path, content]) => {
-                const strContent = stringifyFile(path, content);
-                return writeFile(path, strContent, {signal})
-            })
-        )
+        await Promise.all(filesEntries.map(([path, content]) => {
+            const strContent = stringifyFile(path, content);
+            return writeFile(path, strContent, {signal})
+        }))
     } catch (e) {
         abortion.abort();
     }
@@ -110,14 +120,9 @@ async function postProcessFiles(filesManager) {
     const packageJson = sortPackageJsonObj({...filesManager.get('package.json')});
     const tsconfig = filesManager.get('tsconfig.json');
 
-    const keysToSort = ['devDependencies', 'dependencies', 'scripts'];
-
-    for (const key of keysToSort) {
-        packageJson[key] = sortJson(packageJson[key]);
-    }
-
     filesManager.add('package.json', packageJson, true);
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
+
     await createFiles(filesManager);
 }
 
