@@ -58,7 +58,7 @@ class FilesManager{
     }
 
     get(filename){
-        return this.#files.get(filename);
+        return {...this.#files.get(filename)};
     }
 }
 
