@@ -20,6 +20,11 @@ const mainCommand = yargs(hideBin(process.argv))
     .options(toYargsOptionsParam(options))
     .positional('directory', {describe: 'A directory where you want initialize your ts project', type: 'string'})
 
+// todo: put lib files in src/ folder
+// todo: enable nesting in readTemplateFiles
+// todo: organize templates structure to support it
+// todo: there will be a bug with rename - make sure it doesnt happen
+// todo: make it optional to rename src/ to lib/ or even blank (./) using --source-dir flag
 
 async function main(argv) {
     const dir = resolveDirectory(argv);
@@ -71,7 +76,7 @@ async function main(argv) {
                 .add(allFlag)
         }
 
-        const optionsPayload = {dir, options:selectedOptions.list, name}
+        const optionsPayload = {dir, options:selectedOptions.list, name, loader}
         await loadBaseLogic(filesManager, config, optionsPayload);
         await Promise.all(selectedOptions.list.map(option => option?.logic(filesManager, config, optionsPayload)));
         await postProcessFiles(filesManager);
