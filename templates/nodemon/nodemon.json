@@ -1,11 +1,8 @@
 {
-  "restartable": "rs",
-  "ext": "json,ts",
-  "execMap": {
-    "ts": "ts-node"
-  },
-  "ignore": [
-    ".git",
-    "node_modules/**"
-  ]
+    "restartable": "rs",
+    "ext": "json,ts",
+    "execMap": {
+        "ts": "ts-node"
+    },
+    "ignore": [".git", "node_modules/**"]
 }

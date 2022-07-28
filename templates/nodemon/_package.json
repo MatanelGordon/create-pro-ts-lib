@@ -1,9 +1,9 @@
 {
-  "devDependencies": {
-    "ts-node": "^10.8.1",
-    "nodemon": "^2.0.18"
-  },
-  "scripts": {
-    "dev": "nodemon index.ts"
-  }
+    "devDependencies": {
+        "ts-node": "^10.8.1",
+        "nodemon": "^2.0.18"
+    },
+    "scripts": {
+        "dev": "nodemon index.ts"
+    }
 }

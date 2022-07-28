@@ -1,11 +1,12 @@
-const _ = require("lodash");
-const chalk = require("chalk");
+const _ = require('lodash');
+const chalk = require('chalk');
 
-const toYargsOptionsParam = options => options.reduce((acc, option) => {
-    const name = option.name;
-    const yargsSettings = option.yargsSettings;
-    return Object.assign(acc, {[name]: yargsSettings});
-}, {})
+const toYargsOptionsParam = (options) =>
+    options.reduce((acc, option) => {
+        const name = option.name;
+        const yargsSettings = option.yargsSettings;
+        return Object.assign(acc, { [name]: yargsSettings });
+    }, {});
 
 const optionsToPrompts = (options) => ({
     type: 'multiselect',
@@ -15,13 +16,13 @@ const optionsToPrompts = (options) => ({
     instructions: false,
     min: 1,
     choices: options
-        .filter(option => option.visible)
-        .map(option => ({
+        .filter((option) => option.visible)
+        .map((option) => ({
             title: option?.color?.(option.name) ?? option.name,
             selected: option.initialSelected,
             value: option,
-        }))
-})
+        })),
+});
 
 /*
 handles collections for options
@@ -36,9 +37,9 @@ class OptionsCollection {
     add(...options) {
         for (const option of options) {
             if (!option instanceof Option) {
-                throw new Error('inserted Option that is not of type Option')
+                throw new Error('inserted Option that is not of type Option');
             }
-            if (!this.#options.find(option0 => option0.name === option.name)) {
+            if (!this.#options.find((option0) => option0.name === option.name)) {
                 this.#options.push(option);
             }
         }
@@ -51,13 +52,13 @@ class OptionsCollection {
     }
 
     remove(option) {
-        const name = typeof option === "string" ? option : option.name;
-        _.remove(this.#options, option => option.name === name);
+        const name = typeof option === 'string' ? option : option.name;
+        _.remove(this.#options, (option) => option.name === name);
         return this;
     }
 
-    removeAll(){
-        _.remove(this.#options, _ => true);
+    removeAll() {
+        _.remove(this.#options, (_) => true);
         return this;
     }
 
@@ -65,19 +66,17 @@ class OptionsCollection {
         if (option instanceof Option) {
             return this.#options.includes(option);
         } else if (typeof option === 'string') {
-            return !!this.#options.find(item => item.name === option || item.alias === option);
+            return !!this.#options.find((item) => item.name === option || item.alias === option);
         }
         throw new Error(`parameter "option" doesnt have a valid type: ${typeof option}`);
     }
 
     includes(...options) {
-        options.reduce((acc, curr) =>
-            acc && this.#isOptionInList(curr)
-        , true)
+        options.reduce((acc, curr) => acc && this.#isOptionInList(curr), true);
     }
 
-    findByName(name){
-        return this.#options.find(opt => opt.name === name);
+    findByName(name) {
+        return this.#options.find((opt) => opt.name === name);
     }
 }
 
@@ -86,9 +85,9 @@ class OptionsCollection {
  */
 
 class Option {
-    static #initialOptions = {type: 'boolean', visible:true};
+    static #initialOptions = { type: 'boolean', visible: true };
 
-    #yargsSettings = {}
+    #yargsSettings = {};
     #name;
     #initialSelected;
     #logic;
@@ -96,10 +95,10 @@ class Option {
     #color;
 
     constructor(name, options = {}) {
-
-        const {type, visible, color} = {
-            ...Option.#initialOptions, ...options
-        }
+        const { type, visible, color } = {
+            ...Option.#initialOptions,
+            ...options,
+        };
 
         this.#name = name;
         this.#yargsSettings.type = type;
@@ -118,7 +117,9 @@ class Option {
 
     get logic() {
         if (!this.#logic) {
-            throw new Error(`Logic not implemented in ${this.name}. Use option.setLogic(cb) to prevent this error.`)
+            throw new Error(
+                `Logic not implemented in ${this.name}. Use option.setLogic(cb) to prevent this error.`
+            );
         }
         return this.#logic;
     }
@@ -127,11 +128,11 @@ class Option {
         return this.#initialSelected;
     }
 
-    get visible(){
+    get visible() {
         return this.#visible;
     }
 
-    get color(){
+    get color() {
         return this.#color;
     }
 
@@ -155,13 +156,12 @@ class Option {
         return this;
     }
 
-    setColor(color){
+    setColor(color) {
         let colorValue = color;
 
-        if(typeof color === "string" && color.charAt(0) === '#'){
-            colorValue  = chalk.hex(color);
-        }
-        else if(typeof color !== "function"){
+        if (typeof color === 'string' && color.charAt(0) === '#') {
+            colorValue = chalk.hex(color);
+        } else if (typeof color !== 'function') {
             throw new Error('Color must be a chalk or kolorist color');
         }
 
@@ -170,10 +170,13 @@ class Option {
     }
 
     toString() {
-        return `Option{ ${this.name} }`
+        return `Option{ ${this.name} }`;
     }
 }
 
 module.exports = {
-    optionsToPrompts, toYargsOptionsParam, Option, OptionsCollection
+    optionsToPrompts,
+    toYargsOptionsParam,
+    Option,
+    OptionsCollection,
 };

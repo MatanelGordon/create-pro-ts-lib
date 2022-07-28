@@ -1,24 +1,25 @@
-const cliSpinners = require("cli-spinners");
-const ErrorWithCode = require("./ErrorWithCode");
+const cliSpinners = require('cli-spinners');
+const ErrorWithCode = require('./ErrorWithCode');
 
 class Loader {
     static ERRORS = {
         notInitialized: 234,
-        notStartedError: 123
-    }
+        notStartedError: 123,
+    };
     #loaderInstance;
 
     async init() {
-        const ora = (
-            await import('ora')
-        ).default;
+        const ora = (await import('ora')).default;
         this.#loaderInstance = ora(cliSpinners.bounce);
         return this;
     }
 
     #validate() {
         if (!this.#loaderInstance) {
-            throw new ErrorWithCode(`Can't start() if not initialized. call init()`, Loader.ERRORS.notInitialized);
+            throw new ErrorWithCode(
+                `Can't start() if not initialized. call init()`,
+                Loader.ERRORS.notInitialized
+            );
         }
     }
 

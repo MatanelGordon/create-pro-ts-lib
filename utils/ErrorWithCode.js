@@ -1,11 +1,11 @@
-class ErrorWithCode extends Error{
+class ErrorWithCode extends Error {
     #code;
     constructor(msg, code) {
         super(msg);
         this.#code = code;
     }
 
-    get code(){
+    get code() {
         return this.#code;
     }
 }

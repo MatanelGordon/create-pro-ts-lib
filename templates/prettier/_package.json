@@ -1,8 +1,8 @@
 {
-  "devDependencies": {
-    "prettier": "^2.7.1"
-  },
-  "script": {
-    "format": "prettier --ignore-path .gitignore -w ."
-  }
+	"devDependencies": {
+		"prettier": "^2.7.1"
+	},
+	"scripts": {
+		"format": "prettier --ignore-path .gitignore -w ."
+	}
 }

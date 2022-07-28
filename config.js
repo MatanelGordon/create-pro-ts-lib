@@ -1,11 +1,11 @@
-const {Option} = require('./utils/options');
-const {nodemonLogic} = require("./logics/nodemon");
-const {prettierLogic} = require("./logics/prettier");
-const {eslintLogic} = require("./logics/eslint");
-const {testsLogic} = require("./logics/tests");
-const {prettierEslintLogic} = require("./logics/prettier-eslint");
-const {allLogic} = require("./logics/all");
-const chalk = require("chalk");
+const { Option } = require('./utils/options');
+const { nodemonLogic } = require('./logics/nodemon');
+const { prettierLogic } = require('./logics/prettier');
+const { eslintLogic } = require('./logics/eslint');
+const { testsLogic } = require('./logics/tests');
+const { prettierEslintLogic } = require('./logics/prettier-eslint');
+const { allLogic } = require('./logics/all');
+const chalk = require('chalk');
 
 module.exports = {
     options: [
@@ -34,7 +34,7 @@ module.exports = {
             .setInitialSelected(false)
             .setLogic(testsLogic),
 
-        new Option('prettier-eslint', {visible: false})
+        new Option('prettier-eslint', { visible: false })
             .setDescription('Prettier and Eslint (also works with --prettier --eslint)')
             .setAlias('pe')
             .setLogic(prettierEslintLogic),
@@ -45,17 +45,17 @@ module.exports = {
             .setAlias('a')
             .setLogic(allLogic),
 
-        new Option('name', {type: 'string'})
-            .setDescription('Determines project name'),
+        new Option('name', { type: 'string' }).setDescription('Determines project name'),
 
-        new Option('src-dir', {type: 'string'})
-            .setDescription('Determines the source directory name (default: \'src\')')
+        new Option('src-dir', { type: 'string' }).setDescription(
+            "Determines the source directory name (default: 'src')"
+        ),
     ],
     files: {
         rename: {
             '_package.json': 'package.json',
-            '_gitignore': '.gitignore',
-            'src/index-test-ts.txt': 'src/index.test.ts'
-        }
-    }
-}
+            _gitignore: '.gitignore',
+            'src/index-test-ts.txt': 'src/index.test.ts',
+        },
+    },
+};

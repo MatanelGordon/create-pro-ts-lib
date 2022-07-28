@@ -1,8 +1,6 @@
 {
-  "compilerOptions": {
-    "types": ["jest"]
-  },
-  "exclude": [
-    "src/**/*.test.ts"
-  ]
+    "compilerOptions": {
+        "types": ["jest"]
+    },
+    "exclude": ["src/**/*.test.ts"]
 }

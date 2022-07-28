@@ -1,17 +1,15 @@
-const path = require("path");
+const path = require('path');
 const deepmerge = require('deepmerge');
-const _ = require("lodash");
+const _ = require('lodash');
 
-const merge = (obj1, obj2) => deepmerge(obj1, obj2, {
-    arrayMerge(target, source) {
-        return _.chain(source)
-            .concat(target)
-            .uniq()
-            .value()
-    }
-})
+const merge = (obj1, obj2) =>
+    deepmerge(obj1, obj2, {
+        arrayMerge(target, source) {
+            return _.chain(source).concat(target).uniq().value();
+        },
+    });
 
-class FilesManager{
+class FilesManager {
     #files;
     #path;
 
@@ -22,16 +20,21 @@ class FilesManager{
     @param {object} config -  App configuration
      */
     constructor(dir) {
-        this.#path = path.isAbsolute(dir)? dir:path.join(__dirname,'../', dir);
+        this.#path = path.isAbsolute(dir) ? dir : path.join(__dirname, '../', dir);
         this.#files = new Map();
     }
 
-    get files(){
-        return Object.fromEntries(Array.from(this.#files.entries()).map(([key, value]) => [path.join(this.#path, key),value]));
+    get files() {
+        return Object.fromEntries(
+            Array.from(this.#files.entries()).map(([key, value]) => [
+                path.join(this.#path, key),
+                value,
+            ])
+        );
     }
 
-    get path(){
-        return this.#path
+    get path() {
+        return this.#path;
     }
 
     /*
@@ -40,24 +43,23 @@ class FilesManager{
     @param {object} object - json object to merge with existing configuration
     @returns the current instance to allow chaining
      */
-    add(fileName, value, force=false){
-        const isJson = path.extname(fileName) === '.json'
+    add(fileName, value, force = false) {
+        const isJson = path.extname(fileName) === '.json';
         const isIgnoreFile = /^\.\w+ignore$/.test(path.basename(fileName));
         const currentValue = this.#files.get(fileName);
         let setterValue = value;
 
-        if(!force && isJson){
+        if (!force && isJson) {
             const currentObject = currentValue ?? {};
 
-            if(!(typeof currentObject === "object" && typeof value === "object")){
-                throw new Error('Could Not merge if current value or new Value are not typeof object');
+            if (!(typeof currentObject === 'object' && typeof value === 'object')) {
+                throw new Error(
+                    'Could Not merge if current value or new Value are not typeof object'
+                );
             }
             setterValue = merge(currentObject, value);
-        }
-        else if(!force && currentValue && isIgnoreFile){
-            setterValue = [currentValue, value]
-                .map(content => content.trim())
-                .join('\n');
+        } else if (!force && currentValue && isIgnoreFile) {
+            setterValue = [currentValue, value].map((content) => content.trim()).join('\n');
         }
 
         console.log('added', fileName);
@@ -65,8 +67,8 @@ class FilesManager{
         return this;
     }
 
-    get(filename){
-        return {...this.#files.get(filename)};
+    get(filename) {
+        return { ...this.#files.get(filename) };
     }
 }
 
