@@ -1,10 +1,19 @@
 const path = require("path");
-const merge = require('deepmerge');
+const deepmerge = require('deepmerge');
+const _ = require("lodash");
+
+const merge = (obj1, obj2) => deepmerge(obj1, obj2, {
+    arrayMerge(target, source) {
+        return _.chain(source)
+            .concat(target)
+            .uniq()
+            .value()
+    }
+})
 
 class FilesManager{
     #files;
     #path;
-    #config;
 
     /*
     Manages File Configurations
@@ -12,10 +21,9 @@ class FilesManager{
     @param {string} dir - The Directory name
     @param {object} config -  App configuration
      */
-    constructor(dir, config) {
+    constructor(dir) {
         this.#path = path.isAbsolute(dir)? dir:path.join(__dirname,'../', dir);
         this.#files = new Map();
-        this.#config = config;
     }
 
     get files(){
