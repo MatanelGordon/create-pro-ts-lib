@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const path = require("path");
-const {readdir, readFile, writeFile, mkdir} = require("fs/promises");
+const {readdir, readFile, writeFile, mkdir, lstat} = require("fs/promises");
 const {existsSync} = require("fs");
 
 const parseFile = (filePath, strContent) => {
@@ -19,8 +19,28 @@ const stringifyFile = (filePath, content) => {
     return strContent;
 }
 
+const recursiveReadDir = async (dirPath) => {
+    const entities = await readdir(dirPath);
+    const stats = await Promise.all(entities.map(entity => lstat(path.join(dirPath, entity))));
+    const files = [];
+
+    await Promise.all(
+        _.zip(entities, stats).map(async ([entity, stat]) => {
+            if (stat.isDirectory()) {
+                const newPath = path.join(dirPath, entity);
+                const dirFiles = await recursiveReadDir(newPath);
+                const relativeDirFiles = dirFiles.map(file => path.join(entity, file));
+                files.push(...relativeDirFiles);
+                return;
+            }
+            files.push(entity);
+        }))
+
+    return files;
+}
+
 const readTemplateFiles = async (templatePath, config = {}) => {
-    const filesNames = await readdir(templatePath);
+    const filesNames = await recursiveReadDir(templatePath);
     const filesPaths = filesNames.map(name => path.join(templatePath, name));
     const files = await Promise.all(_.zip(filesNames, filesPaths).map(async ([name, filePath]) => {
         const contentBuffer = await readFile(filePath);
@@ -28,7 +48,9 @@ const readTemplateFiles = async (templatePath, config = {}) => {
         const content = parseFile(name, bufferStr);
 
         return {
-            name, path: filePath, content
+            name,
+            path: filePath,
+            content
         };
     }))
 
@@ -117,7 +139,7 @@ async function createFiles(filesManager) {
 }
 
 async function postProcessFiles(filesManager) {
-    const packageJson = sortPackageJsonObj({...filesManager.get('package.json')});
+    const packageJson = sortPackageJsonObj(filesManager.get('package.json'));
     const tsconfig = filesManager.get('tsconfig.json');
 
     filesManager.add('package.json', packageJson, true);
