@@ -56,7 +56,8 @@ const readTemplateFiles = async (templatePath, config = {}) => {
 
     return files.map(item => (
         {
-            ...item, name: config?.files?.rename?.[item.name] ?? item.name
+            ...item,
+            name: config?.files?.rename?.[item.name] ?? item.name
         }
     ))
 }
@@ -127,10 +128,18 @@ async function createFiles(filesManager) {
         }
 
         await mkdir(filesManager.path, {recursive: true});
-        await Promise.all(filesEntries.map(([path, content]) => {
-            const strContent = stringifyFile(path, content);
-            return writeFile(path, strContent, {signal})
-        }))
+        await Promise.all(
+            filesEntries.map(
+                async ([filePath, content]) => {
+                    const strContent = stringifyFile(filePath, content);
+                    const dirPath = path.dirname(filePath);
+                    if (!existsSync(dirPath)) {
+                        await mkdir(dirPath, {recursive: true});
+                    }
+                    await writeFile(filePath, strContent, {signal})
+                }
+            )
+        )
     } catch (e) {
         abortion.abort();
     }
