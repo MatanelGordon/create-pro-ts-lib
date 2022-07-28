@@ -47,12 +47,15 @@ module.exports = {
 
         new Option('name', {type: 'string'})
             .setDescription('Determines project name'),
+
+        new Option('src-dir', {type: 'string'})
+            .setDescription('Determines the source directory name (default: \'src\')')
     ],
     files: {
         rename: {
             '_package.json': 'package.json',
             '_gitignore': '.gitignore',
-            'index-test-ts.txt': 'index.test.ts'
+            'src/index-test-ts.txt': 'src/index.test.ts'
         }
     }
 }
