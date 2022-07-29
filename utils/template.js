@@ -2,7 +2,6 @@ const _ = require('lodash');
 const path = require('path');
 const { readdir, readFile, writeFile, mkdir, lstat } = require('fs/promises');
 const { existsSync } = require('fs');
-const chalk = require("chalk");
 const ErrorWithCode = require("./ErrorWithCode");
 
 const parseFile = (filePath, strContent) => {
@@ -127,14 +126,13 @@ async function createFiles(filesManager, {forceWrite} = DEFAULT_OPTIONS) {
 
     process.once('SIGINT', onCancel);
 
+    const isDirExists = existsSync(filesManager.path);
+
+    if (isDirExists && !forceWrite) {
+        throw new ErrorWithCode(`EEXIST: dir '${path.dirname(filesManager.path)}' already exists`,DIR_EXISTS_ERROR);
+    }
+
     try {
-        const isDirExists = existsSync(filesManager.path);
-
-        if (isDirExists && !forceWrite) {
-            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
-            return;
-        }
-
         if(!isDirExists){
             await mkdir(filesManager.path, { recursive: true });
         }
