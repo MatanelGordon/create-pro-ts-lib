@@ -7,15 +7,15 @@ const { createTemplateFilesDownloader, createFiles } = require('../utils/templat
 
 const DEFAULT_SOURCE_DIR = 'src';
 
-const moveFilesForce = async (source, dest) => {
+const moveFilesForce = async (source, dest, {loader}) => {
     const fileManager = new FilesManager(dest);
     const download = createTemplateFilesDownloader(source);
     await download(fileManager, {});
-    await createFiles(fileManager, true);
+    await createFiles(fileManager, {forceWrite: true, loader});
     await rm(source, { recursive: true, force: true, retryDelay: 1000, maxRetries: 5 });
 };
 
-const srcDirLogic = async (dir, sourceDir) => {
+const srcDirLogic = async (dir, sourceDir, {loader}) => {
     if (!sourceDir || sourceDir === DEFAULT_SOURCE_DIR) return;
 
     const oldPath = path.join(dir, DEFAULT_SOURCE_DIR);
@@ -24,7 +24,7 @@ const srcDirLogic = async (dir, sourceDir) => {
     if (isClearToMove) {
         return mv(oldPath, newPath);
     }
-    return moveFilesForce(oldPath, newPath);
+    return moveFilesForce(oldPath, newPath, {loader});
 };
 
-module.exports = srcDirLogic;
+module.exports = { srcDirLogic, DEFAULT_SOURCE_DIR };
