@@ -5,6 +5,9 @@ const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
 const { allLogic } = require('./logics/all');
+const srcDirLogic = require('./logics/srcDir');
+const nameLogic = require('./logics/name');
+
 const chalk = require('chalk');
 
 module.exports = {
@@ -45,11 +48,13 @@ module.exports = {
             .setAlias('a')
             .setLogic(allLogic),
 
-        new Option('name', { type: 'string' }).setDescription('Determines project name'),
+        new Option('name', { type: 'string' })
+            .setDescription('Determines project name')
+            .setLogic(nameLogic),
 
-        new Option('src-dir', { type: 'string' }).setDescription(
-            "Determines the source directory name (default: 'src')"
-        ),
+        new Option('src-dir', { type: 'string' })
+            .setDescription("Determines the source directory name (default: 'src')")
+            .setLogic(srcDirLogic),
     ],
     files: {
         rename: {
