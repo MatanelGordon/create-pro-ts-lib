@@ -153,6 +153,11 @@ class Option {
         return this;
     }
 
+    setDefaultValue(value){
+        this.#yargsSettings.default = value;
+        return this;
+    }
+
     setLogic(logicFunc) {
         this.#logic = logicFunc;
         return this;
