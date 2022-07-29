@@ -7,7 +7,7 @@ const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
-const { postProcessFiles, DEFAULT_SOURCE_DIR, setSourceDir } = require('./utils/template');
+const { postProcessFiles } = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
 const Loader = require('./utils/Loader');
 
@@ -58,15 +58,16 @@ async function main(argv) {
 
     try {
         const formResults = await prompts(questions);
-        const selectedOptions = new OptionsCollection()
-            .addAll(cliOptions)
-            .addAll(formResults?.options ?? []);
-
         const name = formResults?.name ?? flags['name'].value;
-        const sourceDir = flags['src-dir']?.value ?? DEFAULT_SOURCE_DIR;
         const prettier = allOptions.findByName('prettier');
         const eslint = allOptions.findByName('eslint');
         const prettierEslint = allOptions.findByName('prettier-eslint');
+        const allFlag = flags['all']?.flag;
+        const nameFlag = flags['name']?.flag;
+        const sourceDirFlag = flags['src-dir'];
+        const selectedOptions = new OptionsCollection()
+            .addAll(cliOptions)
+            .addAll(formResults?.options ?? []);
 
         if (
             selectedOptions.includes(prettier, eslint) ||
@@ -75,21 +76,30 @@ async function main(argv) {
             selectedOptions.remove(prettier).remove(eslint).add(prettierEslint);
         }
 
-        const allFlag = flags['all']?.flag;
-
         if (allFlag) {
             selectedOptions.removeAll().add(allFlag);
+        }
+
+        if (nameFlag) {
+            selectedOptions.add(nameFlag);
         }
 
         const optionsPayload = { dir, options: selectedOptions.list, name, loader };
         await loadBaseLogic(filesManager, config, optionsPayload);
         await Promise.all(
             selectedOptions.list.map((option) =>
-                option?.logic(filesManager, config, optionsPayload)
+                option?.logic(filesManager, config, {
+                    ...optionsPayload,
+                    optionValue: argv[option.name],
+                })
             )
         );
+
         await postProcessFiles(filesManager);
-        await setSourceDir(dir, sourceDir);
+
+        if (sourceDirFlag) {
+            await sourceDirFlag.flag.logic(dir, sourceDirFlag.value);
+        }
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
             console.log(chalk.red(`Ok nevermind...`));
