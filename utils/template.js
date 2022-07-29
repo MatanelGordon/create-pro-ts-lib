@@ -131,7 +131,8 @@ async function createFiles(filesManager, {forceWrite} = DEFAULT_OPTIONS) {
         const isDirExists = existsSync(filesManager.path);
 
         if (isDirExists && !forceWrite) {
-            throw new ErrorWithCode(`EEXIST: ${filesManager.path} already exists!`, DIR_EXISTS_ERROR);
+            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
+            return;
         }
 
         if(!isDirExists){
@@ -151,10 +152,7 @@ async function createFiles(filesManager, {forceWrite} = DEFAULT_OPTIONS) {
     } catch (e) {
         abortion.abort();
 
-        if(e.code === DIR_EXISTS_ERROR){
-            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
-        }
-        else if(e instanceof ErrorWithCode){
+        if(e instanceof ErrorWithCode){
             throw e;
         }
     }
