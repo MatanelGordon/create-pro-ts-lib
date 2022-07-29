@@ -61,8 +61,6 @@ class FilesManager {
         } else if (!force && currentValue && isIgnoreFile) {
             setterValue = [currentValue, value].map((content) => content.trim()).join('\n');
         }
-
-        console.log('added', fileName);
         this.#files.set(fileName, setterValue);
         return this;
     }
