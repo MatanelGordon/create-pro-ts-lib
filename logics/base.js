@@ -1,17 +1,14 @@
-const { readTemplateFiles } = require('../utils/template');
+const { createTemplateFilesDownloader } = require('../utils/template');
 
 const TEMPLATE_PATH = 'templates/base';
-const baseLogic = async (fileManager, config, options) => {
-    const files = await readTemplateFiles(TEMPLATE_PATH, config);
+const downloadBaseTemplateFiles = createTemplateFilesDownloader(TEMPLATE_PATH);
 
-    files.forEach(({ name, content }) => {
-        fileManager.add(name, content);
-    });
+const baseLogic = async (fileManager, config) => {
+    await downloadBaseTemplateFiles(fileManager, config);
 
     const nodeVersion = +process.version.slice(1).split('.')[0];
 
     const dynamicPackageJson = {
-        name: options.name,
         devDependencies: {
             '@types/node': `^${nodeVersion}`,
         },
