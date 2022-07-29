@@ -47,7 +47,9 @@ class OptionsCollection {
     }
 
     addAll(options) {
-        this.add(...options);
+        if(Array.isArray(options)){
+            this.add(...options);
+        }
         return this;
     }
 
