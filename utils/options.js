@@ -47,7 +47,7 @@ class OptionsCollection {
     }
 
     addAll(options) {
-        if(Array.isArray(options)){
+        if (Array.isArray(options)) {
             this.add(...options);
         }
         return this;
@@ -153,7 +153,7 @@ class Option {
         return this;
     }
 
-    setDefaultValue(value){
+    setDefaultValue(value) {
         this.#yargsSettings.default = value;
         return this;
     }

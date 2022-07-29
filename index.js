@@ -23,7 +23,6 @@ const mainCommand = yargs(hideBin(process.argv))
         demandOption: false,
     });
 
-
 async function main(argv) {
     const dir = resolveDirectory(argv);
     const argumentExtractor = new ArgumentExtractor(config);
@@ -46,7 +45,7 @@ async function main(argv) {
             type: 'text',
             name: 'name',
             message: 'Project Name',
-            initial: (dir ?? '').replaceAll('/','-'),
+            initial: (dir ?? '').replaceAll('/', '-'),
         });
     }
 
@@ -64,7 +63,7 @@ async function main(argv) {
             .addAll(cliOptions)
             .addAll(formResults?.options);
 
-        if(allFlag){
+        if (allFlag) {
             selectedOptions.addAll(options);
         }
 
@@ -105,7 +104,6 @@ async function main(argv) {
                 `package.json`
             )} for available scripts\r\n\r\n`
         );
-
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
             console.error(chalk.red`Ok nevermind...`);

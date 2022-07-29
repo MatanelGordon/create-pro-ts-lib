@@ -11,7 +11,7 @@ const moveFilesForce = async (source, dest) => {
     const fileManager = new FilesManager(dest);
     const download = createTemplateFilesDownloader(source);
     await download(fileManager, {});
-    await createFiles(fileManager, {forceWrite: true});
+    await createFiles(fileManager, { forceWrite: true });
     await rm(source, { recursive: true, force: true, retryDelay: 1000, maxRetries: 5 });
 };
 
