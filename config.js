@@ -4,7 +4,6 @@ const { prettierLogic } = require('./logics/prettier');
 const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
-const { allLogic } = require('./logics/all');
 const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/src-dir');
 const nameLogic = require('./logics/name');
 
@@ -43,17 +42,12 @@ module.exports = {
             .setLogic(prettierEslintLogic),
     ],
     flags: [
-        new Option('all')
-            .setDescription('ADDS ALL FEATURES')
-            .setAlias('a')
-            .setLogic(allLogic),
+        new Option('all').setDescription('ADDS ALL FEATURES').setAlias('a').setLogic(),
 
-        new Option('name', { type: 'string' })
-            .setDescription('Project name')
-            .setLogic(nameLogic),
+        new Option('name', { type: 'string' }).setDescription('Project name').setLogic(nameLogic),
 
         new Option('src-dir', { type: 'string' })
-            .setDescription("Source directory name")
+            .setDescription('Source directory name')
             .setDefaultValue(DEFAULT_SOURCE_DIR)
             .setLogic(srcDirLogic),
     ],

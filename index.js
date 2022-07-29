@@ -56,7 +56,7 @@ async function main(argv) {
 
     try {
         const formResults = await prompts(questions);
-        const name = formResults?.name ?? nameFlag.value;
+        const name = formResults?.name ?? dir ?? nameFlag.value;
         const actualDir = dir ?? name;
         const filesManager = new FileManager(actualDir);
 
@@ -64,15 +64,15 @@ async function main(argv) {
             .addAll(cliOptions)
             .addAll(formResults?.options);
 
+        if(allFlag){
+            selectedOptions.addAll(options);
+        }
+
         if (
             selectedOptions.includes(prettier, eslint) ||
             selectedOptions.includes(prettierEslint)
         ) {
             selectedOptions.remove(prettier).remove(eslint).add(prettierEslint);
-        }
-
-        if (allFlag) {
-            selectedOptions.removeAll().add(allFlag);
         }
 
         if (nameFlag) {
