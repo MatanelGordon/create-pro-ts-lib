@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const path = require('path');
-const { readdir, readFile, writeFile, mkdir, lstat, rename } = require('fs/promises');
+const { readdir, readFile, writeFile, mkdir, lstat } = require('fs/promises');
 const { existsSync } = require('fs');
+const chalk = require("chalk");
 
 const parseFile = (filePath, strContent) => {
     let content = strContent;
@@ -112,7 +113,7 @@ function sortPackageJsonObj(packageJson) {
     return sortedPackageJson;
 }
 
-async function createFiles(filesManager) {
+async function createFiles(filesManager, forceWrite = false) {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
     const signal = abortion.signal;
@@ -125,12 +126,17 @@ async function createFiles(filesManager) {
     console.log(`path: ${filesManager.path}`);
 
     try {
-        if (existsSync(filesManager.path)) {
-            console.error(`ERROR! ${filesManager.path} already exists!`);
+        const isDirExists = existsSync(filesManager.path);
+
+        if (isDirExists && !forceWrite) {
+            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
             return;
         }
 
-        await mkdir(filesManager.path, { recursive: true });
+        if(!isDirExists){
+            await mkdir(filesManager.path, { recursive: true });
+        }
+
         await Promise.all(
             filesEntries.map(async ([filePath, content]) => {
                 const strContent = stringifyFile(filePath, content);
@@ -144,8 +150,6 @@ async function createFiles(filesManager) {
     } catch (e) {
         abortion.abort();
     }
-
-    console.log('ENJOY!');
 }
 
 async function postProcessFiles(filesManager) {
@@ -156,15 +160,6 @@ async function postProcessFiles(filesManager) {
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
 
     await createFiles(filesManager);
-}
-
-const DEFAULT_SOURCE_DIR = 'src';
-
-async function setSourceDir(dir, sourceDir) {
-    if (!sourceDir || sourceDir === DEFAULT_SOURCE_DIR) return;
-    const oldPath = path.join(dir, DEFAULT_SOURCE_DIR);
-    const newPath = path.join(dir, sourceDir);
-    await rename(oldPath, newPath);
 }
 
 const createTemplateFilesDownloader = (path) => async (filesManager, config) => {
@@ -178,7 +173,6 @@ const createTemplateFilesDownloader = (path) => async (filesManager, config) => 
 module.exports = {
     readTemplateFiles,
     postProcessFiles,
+    createFiles,
     createTemplateFilesDownloader,
-    DEFAULT_SOURCE_DIR,
-    setSourceDir,
 };
