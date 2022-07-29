@@ -3,6 +3,7 @@ const path = require('path');
 const { readdir, readFile, writeFile, mkdir, lstat } = require('fs/promises');
 const { existsSync } = require('fs');
 const chalk = require("chalk");
+const ErrorWithCode = require("./ErrorWithCode");
 
 const parseFile = (filePath, strContent) => {
     let content = strContent;
@@ -113,7 +114,9 @@ function sortPackageJsonObj(packageJson) {
     return sortedPackageJson;
 }
 
-async function createFiles(filesManager, forceWrite = false) {
+const DIR_EXISTS_ERROR = 409;
+const DEFAULT_OPTIONS = {forceWrite:false};
+async function createFiles(filesManager, {forceWrite} = DEFAULT_OPTIONS) {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
     const signal = abortion.signal;
@@ -123,14 +126,12 @@ async function createFiles(filesManager, forceWrite = false) {
     };
 
     process.once('SIGINT', onCancel);
-    console.log(`path: ${filesManager.path}`);
 
     try {
         const isDirExists = existsSync(filesManager.path);
 
         if (isDirExists && !forceWrite) {
-            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
-            return;
+            throw new ErrorWithCode(`EEXIST: ${filesManager.path} already exists!`, DIR_EXISTS_ERROR);
         }
 
         if(!isDirExists){
@@ -149,6 +150,13 @@ async function createFiles(filesManager, forceWrite = false) {
         );
     } catch (e) {
         abortion.abort();
+
+        if(e.code === DIR_EXISTS_ERROR){
+            console.error(chalk.red`ERROR! ${filesManager.path} already exists!`);
+        }
+        else if(e instanceof ErrorWithCode){
+            throw e;
+        }
     }
 }
 
@@ -175,4 +183,5 @@ module.exports = {
     postProcessFiles,
     createFiles,
     createTemplateFilesDownloader,
+    ERRORS : {DIR_EXISTS_ERROR}
 };
