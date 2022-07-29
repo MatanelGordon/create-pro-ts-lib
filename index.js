@@ -9,7 +9,6 @@ const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles } = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const Loader = require('./utils/Loader');
 
 const { options } = config;
 
@@ -17,18 +16,18 @@ const mainCommand = yargs(hideBin(process.argv))
     .usage('usage: \n\r create-pro-ts-lib <directory> <options>')
     .help()
     .version('1.0.0')
-    .options(toYargsOptionsParam(options))
+    .options(toYargsOptionsParam([...options, ...config.flags]))
     .positional('directory', {
         describe: 'A directory where you want initialize your ts project',
         type: 'string',
     });
 
-// todo: put lib files in src/ folder
-// todo: enable nesting in readTemplateFiles
-// todo: organize templates structure to support it
-// todo: there will be a bug with rename - make sure it doesnt happen
-// todo: make it optional to rename src/ to lib/ or even blank (./) using --source-dir flag
-// todo: prettify output
+// todo: put lib files in src/ folder [DONE]
+// todo: enable nesting in readTemplateFiles [DONE]
+// todo: organize templates structure to support it [DONE]
+// todo: there will be a bug with rename - make sure it doesnt happen [DONE]
+// todo: make it optional to rename src/ to lib/ or even blank (./) using --source-dir flag [DONE]
+// todo: prettify output at the end - show success! show list of created files and show further commands (install and stuff)
 
 async function main(argv) {
     const dir = resolveDirectory(argv);
@@ -37,13 +36,18 @@ async function main(argv) {
     const allOptions = new OptionsCollection().addAll(options);
     const flags = argumentExtractor.getFlags(argv);
     const cliOptions = argumentExtractor.getOptions(argv);
-    //todo: use loader for better output
-    const loader = await new Loader().init();
+
+    const prettier = allOptions.findByName('prettier');
+    const eslint = allOptions.findByName('eslint');
+    const prettierEslint = allOptions.findByName('prettier-eslint');
+    const allFlag = flags['all']?.flag;
+    const nameFlag = flags['name'];
+    const sourceDirFlag = flags['src-dir'];
 
     //build questions
     const questions = [];
 
-    if (!flags['name']) {
+    if (!nameFlag) {
         questions.push({
             type: 'text',
             name: 'name',
@@ -52,22 +56,16 @@ async function main(argv) {
         });
     }
 
-    if (cliOptions.length === 0 && !flags['all']) {
+    if (cliOptions.length === 0 && !allFlag) {
         questions.push(optionsToPrompts(options));
     }
 
     try {
         const formResults = await prompts(questions);
-        const name = formResults?.name ?? flags['name'].value;
-        const prettier = allOptions.findByName('prettier');
-        const eslint = allOptions.findByName('eslint');
-        const prettierEslint = allOptions.findByName('prettier-eslint');
-        const allFlag = flags['all']?.flag;
-        const nameFlag = flags['name']?.flag;
-        const sourceDirFlag = flags['src-dir'];
+        const name = formResults?.name ?? nameFlag.value;
         const selectedOptions = new OptionsCollection()
             .addAll(cliOptions)
-            .addAll(formResults?.options ?? []);
+            .addAll(formResults?.options);
 
         if (
             selectedOptions.includes(prettier, eslint) ||
@@ -81,28 +79,30 @@ async function main(argv) {
         }
 
         if (nameFlag) {
-            selectedOptions.add(nameFlag);
+            selectedOptions.add(nameFlag.flag);
         }
 
-        const optionsPayload = { dir, options: selectedOptions.list, name, loader };
-        await loadBaseLogic(filesManager, config, optionsPayload);
+        const logicPayload = { dir, options: selectedOptions.list, name };
+        await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
             selectedOptions.list.map((option) =>
                 option?.logic(filesManager, config, {
-                    ...optionsPayload,
+                    ...logicPayload,
                     optionValue: argv[option.name],
                 })
             )
         );
 
+
         await postProcessFiles(filesManager);
 
         if (sourceDirFlag) {
-            await sourceDirFlag.flag.logic(dir, sourceDirFlag.value);
+            await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
         }
+        console.log(chalk.green`path: ${filesManager.path}`);
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
-            console.log(chalk.red(`Ok nevermind...`));
+            console.log(chalk.red`Ok nevermind...`);
             return;
         }
         throw e;
