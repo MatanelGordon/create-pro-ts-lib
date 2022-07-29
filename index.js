@@ -7,7 +7,7 @@ const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
-const { postProcessFiles } = require('./utils/template');
+const { postProcessFiles, ERRORS: TEMPLATE_ERROR } = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
 
 const { options } = config;
@@ -81,7 +81,7 @@ async function main(argv) {
         if (nameFlag) {
             selectedOptions.add(nameFlag.flag);
         }
-
+        console.log(`\r\nScaffolding project in ${filesManager.path}...\r\n`);
         const logicPayload = { dir, options: selectedOptions.list, name };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
@@ -93,16 +93,28 @@ async function main(argv) {
             )
         );
 
-
         await postProcessFiles(filesManager);
 
         if (sourceDirFlag) {
             await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
         }
-        console.log(chalk.green`path: ${filesManager.path}`);
+
+        console.log(
+            `${chalk.green`Success!`} \r\n\r\nNow Run: \r\n\t${chalk.hex(
+                '#c58af9'
+            )`cd`} ${chalk.blue(dir)} \r\n\t${chalk.hex(
+                '#c58af9'
+            )`npm`} install \r\n\r\nView "scripts" in ${chalk.green(
+                `package.json`
+            )} for available scripts\r\n\r\n`
+        );
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
-            console.log(chalk.red`Ok nevermind...`);
+            console.error(chalk.red`Ok nevermind...`);
+            return;
+        }
+        if (e.code === TEMPLATE_ERROR.DIR_EXISTS_ERROR) {
+            console.error(chalk.red`ERROR! Directory already exists`);
             return;
         }
         throw e;
