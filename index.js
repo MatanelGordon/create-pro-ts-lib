@@ -20,18 +20,12 @@ const mainCommand = yargs(hideBin(process.argv))
     .positional('directory', {
         describe: 'A directory where you want initialize your ts project',
         type: 'string',
+        demandOption: false,
     });
 
-// todo: put lib files in src/ folder [DONE]
-// todo: enable nesting in readTemplateFiles [DONE]
-// todo: organize templates structure to support it [DONE]
-// todo: there will be a bug with rename - make sure it doesnt happen [DONE]
-// todo: make it optional to rename src/ to lib/ or even blank (./) using --source-dir flag [DONE]
-// todo: prettify output at the end - show success! show list of created files and show further commands (install and stuff)
 
 async function main(argv) {
     const dir = resolveDirectory(argv);
-    const filesManager = new FileManager(dir);
     const argumentExtractor = new ArgumentExtractor(config);
     const allOptions = new OptionsCollection().addAll(options);
     const flags = argumentExtractor.getFlags(argv);
@@ -47,12 +41,12 @@ async function main(argv) {
     //build questions
     const questions = [];
 
-    if (!nameFlag) {
+    if (!dir || /\//.test(dir)) {
         questions.push({
             type: 'text',
             name: 'name',
             message: 'Project Name',
-            initial: dir,
+            initial: (dir ?? '').replaceAll('/','-'),
         });
     }
 
@@ -63,6 +57,9 @@ async function main(argv) {
     try {
         const formResults = await prompts(questions);
         const name = formResults?.name ?? nameFlag.value;
+        const actualDir = dir ?? name;
+        const filesManager = new FileManager(actualDir);
+
         const selectedOptions = new OptionsCollection()
             .addAll(cliOptions)
             .addAll(formResults?.options);
@@ -102,12 +99,13 @@ async function main(argv) {
         console.log(
             `${chalk.green`Success!`} \r\n\r\nNow Run: \r\n\t${chalk.hex(
                 '#c58af9'
-            )`cd`} ${chalk.blue(dir)} \r\n\t${chalk.hex(
+            )`cd`} ${chalk.blue(actualDir)} \r\n\t${chalk.hex(
                 '#c58af9'
             )`npm`} install \r\n\r\nView "scripts" in ${chalk.green(
                 `package.json`
             )} for available scripts\r\n\r\n`
         );
+
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
             console.error(chalk.red`Ok nevermind...`);
