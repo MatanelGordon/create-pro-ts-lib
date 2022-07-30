@@ -55,6 +55,10 @@ async function main(argv) {
         questions.push(optionsToPrompts(options));
     }
 
+    if(flags['no-colors']){
+        chalk.level = 0;
+    }
+
     try {
         const formResults = await prompts(questions);
         const name = formResults?.name ?? dir ?? nameFlag.value;

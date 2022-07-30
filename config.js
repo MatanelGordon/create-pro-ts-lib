@@ -51,8 +51,9 @@ module.exports = {
             .setDefaultValue(DEFAULT_SOURCE_DIR)
             .setLogic(srcDirLogic),
 
-        new Option('dry')
-            .setDescription('Run the CLI without creating the files')
+        new Option('dry').setDescription('Run the CLI without creating the files'),
+
+        new Option('no-colors').setDescription('Disable output colors'),
     ],
     files: {
         rename: {
