@@ -159,16 +159,12 @@ async function createFiles(filesManager, { forceWrite } = DEFAULT_OPTIONS) {
     }
 }
 
-async function postProcessFiles(filesManager, isDryMode = false) {
+function postProcessFiles(filesManager) {
     const packageJson = sortPackageJsonObj(filesManager.get('package.json'));
     const tsconfig = filesManager.get('tsconfig.json');
 
     filesManager.add('package.json', packageJson, true);
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
-
-    if(!isDryMode){
-        await createFiles(filesManager);
-    }
 }
 
 const createTemplateFilesDownloader = (path) => async (filesManager, config) => {

@@ -33,6 +33,10 @@ class FilesManager {
         );
     }
 
+    get relativeFiles() {
+        return Object.fromEntries(this.#files.entries());
+    }
+
     get path() {
         return this.#path;
     }
@@ -66,7 +70,17 @@ class FilesManager {
     }
 
     get(filename) {
-        return { ...this.#files.get(filename) };
+        const content = this.#files.get(filename);
+        if(typeof content === 'object'){
+            return {...content}
+        }
+        return content;
+    }
+
+    set(oldPath, newPath) {
+        const content = this.get(oldPath);
+        this.#files.set(newPath, content);
+        this.#files.delete(oldPath);
     }
 }
 

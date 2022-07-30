@@ -7,7 +7,7 @@ const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
-const { postProcessFiles, ERRORS: TEMPLATE_ERROR } = require('./utils/template');
+const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles} = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
 const {SRC_DIR_BAD_PARAMS_CODE} = require("./logics/src-dir");
 
@@ -91,7 +91,7 @@ async function main(argv) {
         const logicPayload = { dir, options: selectedOptions.list, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
-            selectedOptions.list.map((option) =>
+            selectedOptions.list.map(async (option) =>
                 option?.logic(filesManager, config, {
                     ...logicPayload,
                     optionValue: argv[option.name],
@@ -99,10 +99,14 @@ async function main(argv) {
             )
         );
 
-        await postProcessFiles(filesManager, !!dryFlag);
+        if(sourceDirFlag){
+            sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value)
+        }
 
-        if (sourceDirFlag && !dryFlag) {
-            await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
+        postProcessFiles(filesManager);
+
+        if(!dryFlag){
+            await createFiles(filesManager)
         }
 
         //printing the final output
