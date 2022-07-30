@@ -114,11 +114,10 @@ async function main(argv) {
             scripts
                 .map(
                     (script) =>
-                        `${purple`npm`} ${
-                            shorthandScripts.includes(script) ? '' : 'run '
-                        }${script}`
+                        `${purple`npm`} ${shorthandScripts.includes(script) ? '' : 'run '}${script}`
                 )
-                .sort().join(', '),
+                .sort()
+                .join(', '),
             '\r\n'
         );
     } catch (e) {
