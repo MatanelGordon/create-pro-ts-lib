@@ -42,7 +42,7 @@ module.exports = {
             .setLogic(prettierEslintLogic),
     ],
     flags: [
-        new Option('all').setDescription('ADDS ALL FEATURES').setAlias('a').setLogic(),
+        new Option('all').setDescription(chalk.red`ADDS ALL FEATURES!`).setAlias('a'),
 
         new Option('name', { type: 'string' }).setDescription('Project name').setLogic(nameLogic),
 
