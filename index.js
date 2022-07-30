@@ -36,6 +36,7 @@ async function main(argv) {
     const allFlag = flags['all']?.flag;
     const nameFlag = flags['name'];
     const sourceDirFlag = flags['src-dir'];
+    const dryFlag = flags['dry'];
     let shouldSetDifferentName = false;
     //build questions
     const questions = [];
@@ -93,7 +94,7 @@ async function main(argv) {
             )
         );
 
-        await postProcessFiles(filesManager);
+        await postProcessFiles(filesManager, !!dryFlag);
 
         if (sourceDirFlag) {
             await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
@@ -113,13 +114,12 @@ async function main(argv) {
             scripts
                 .map(
                     (script) =>
-                        `\r\n\t ${purple`npm`} ${
+                        `${purple`npm`} ${
                             shorthandScripts.includes(script) ? '' : 'run '
-                        }${script} `
+                        }${script}`
                 )
-                .sort()
-                .join(''),
-            '\r\n\r\n'
+                .sort().join(', '),
+            '\r\n'
         );
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {

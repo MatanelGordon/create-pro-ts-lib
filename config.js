@@ -50,6 +50,9 @@ module.exports = {
             .setDescription('Source directory name')
             .setDefaultValue(DEFAULT_SOURCE_DIR)
             .setLogic(srcDirLogic),
+
+        new Option('dry')
+            .setDescription('Run the CLI without creating the files')
     ],
     files: {
         rename: {
