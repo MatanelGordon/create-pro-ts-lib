@@ -1,7 +1,7 @@
 {
     "name": "create-pro-ts-lib",
     "version": "1.0.0",
-    "description": "A command-line-interface for building Typescript library boilerplate",
+    "description": "A command-line-interface for building Typescript libraries",
     "main": "index.js",
     "scripts": {
         "run": "node ./index.js my-proj",
