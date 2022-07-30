@@ -104,7 +104,7 @@ async function main(argv) {
 
         const purple = chalk.hex('#c58af9');
         console.log(
-            chalk.green`Success!`,
+            chalk.green.bold`Success!`,
             '\r\n\r\n',
             'Now run:',
             `\r\n\t ${purple`cd`} ${chalk.blue(actualDir)}`,
