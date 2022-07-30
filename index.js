@@ -9,6 +9,7 @@ const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles, ERRORS: TEMPLATE_ERROR } = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
+const {SRC_DIR_BAD_PARAMS_CODE} = require("./logics/src-dir");
 
 const { options } = config;
 
@@ -24,7 +25,7 @@ const mainCommand = yargs(hideBin(process.argv))
     });
 
 async function main(argv) {
-    const dir = resolveDirectory(argv);
+    const cliDir = resolveDirectory(argv);
     const argumentExtractor = new ArgumentExtractor(config);
     const allOptions = new OptionsCollection().addAll(options);
     const flags = argumentExtractor.getFlags(argv);
@@ -41,12 +42,12 @@ async function main(argv) {
     //build questions
     const questions = [];
 
-    if (!dir || /\//.test(dir)) {
+    if (!cliDir || /\//.test(cliDir)) {
         questions.push({
             type: 'text',
             name: 'name',
             message: 'Project Name',
-            initial: (dir ?? '').replaceAll('/', '-'),
+            initial: (cliDir ?? '').replaceAll('/', '-'),
         });
         shouldSetDifferentName = true;
     }
@@ -55,15 +56,15 @@ async function main(argv) {
         questions.push(optionsToPrompts(options));
     }
 
-    if(flags['no-colors']){
+    if (flags['no-colors']) {
         chalk.level = 0;
     }
 
     try {
         const formResults = await prompts(questions);
-        const name = formResults?.name ?? dir ?? nameFlag.value;
-        const actualDir = dir ?? name;
-        const filesManager = new FileManager(actualDir);
+        const name = formResults?.name ?? cliDir ?? nameFlag.value;
+        const dir = cliDir ?? name;
+        const filesManager = new FileManager(dir);
 
         const selectedOptions = new OptionsCollection()
             .addAll(cliOptions)
@@ -82,12 +83,12 @@ async function main(argv) {
 
         if (nameFlag || shouldSetDifferentName) {
             const nameFlagInstance =
-                nameFlag.flag ?? config.flags.find((flag) => flag.name === 'name');
+                nameFlag?.flag ?? config.flags.find((flag) => flag.name === 'name');
             selectedOptions.add(nameFlagInstance);
         }
 
-        console.log(`\r\nScaffolding project in ${filesManager.path}...\r\n`);
-        const logicPayload = { dir, options: selectedOptions.list, name };
+        console.log(`\r\nScaffolding project in ${filesManager.path}...`);
+        const logicPayload = { dir, options: selectedOptions.list, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
             selectedOptions.list.map((option) =>
@@ -100,18 +101,21 @@ async function main(argv) {
 
         await postProcessFiles(filesManager, !!dryFlag);
 
-        if (sourceDirFlag) {
+        if (sourceDirFlag && !dryFlag) {
             await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
         }
+
+        //printing the final output
         const scripts = Object.keys(filesManager.get('package.json').scripts ?? {});
         const shorthandScripts = ['start', 'build', 'test'];
 
         const purple = chalk.hex('#c58af9');
         console.log(
+            '\r\n',
             chalk.green.bold`Success!`,
             '\r\n\r\n',
             'Now run:',
-            `\r\n\t ${purple`cd`} ${chalk.blue(actualDir)}`,
+            `\r\n\t ${purple`cd`} ${chalk.blue(dir)}`,
             `\r\n\t ${purple`npm`} install`,
             '\r\n\r\n',
             'Available Commands:',
@@ -125,15 +129,20 @@ async function main(argv) {
             '\r\n'
         );
     } catch (e) {
-        if (e?.code === CANCELLED_REQUEST) {
-            console.error(chalk.red`Ok nevermind...`);
-            return;
+        switch (e?.code){
+            case CANCELLED_REQUEST:
+                console.error(chalk.red`Ok nevermind...`);
+                break;
+            case TEMPLATE_ERROR.DIR_EXISTS_ERROR:
+                console.error(chalk.red`ERROR! Directory already exists`);
+                break;
+            case SRC_DIR_BAD_PARAMS_CODE:
+                console.error(chalk.red`Error! could not execute `)
+                break;
+            default:
+                throw e;
         }
-        if (e.code === TEMPLATE_ERROR.DIR_EXISTS_ERROR) {
-            console.error(chalk.red`ERROR! Directory already exists`);
-            return;
-        }
-        throw e;
+
     }
 }
 
