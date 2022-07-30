@@ -1,14 +1,14 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 
-const toYargsOptionsParam = (options) =>
+const toYargsOptionsParam = options =>
     options.reduce((acc, option) => {
         const name = option.name;
         const yargsSettings = option.yargsSettings;
         return Object.assign(acc, { [name]: yargsSettings });
     }, {});
 
-const optionsToPrompts = (options) => ({
+const optionsToPrompts = options => ({
     type: 'multiselect',
     name: 'options',
     message: 'Select your features',
@@ -16,8 +16,8 @@ const optionsToPrompts = (options) => ({
     instructions: false,
     min: 1,
     choices: options
-        .filter((option) => option.visible)
-        .map((option) => ({
+        .filter(option => option.visible)
+        .map(option => ({
             title: option?.color?.(option.name) ?? option.name,
             selected: option.initialSelected,
             value: option,
@@ -39,7 +39,7 @@ class OptionsCollection {
             if (!option instanceof Option) {
                 throw new Error('inserted Option that is not of type Option');
             }
-            if (!this.#options.find((option0) => option0.name === option.name)) {
+            if (!this.#options.find(option0 => option0.name === option.name)) {
                 this.#options.push(option);
             }
         }
@@ -55,12 +55,7 @@ class OptionsCollection {
 
     remove(option) {
         const name = typeof option === 'string' ? option : option.name;
-        _.remove(this.#options, (option) => option.name === name);
-        return this;
-    }
-
-    removeAll() {
-        _.remove(this.#options, (_) => true);
+        _.remove(this.#options, option => option.name === name);
         return this;
     }
 
@@ -68,17 +63,17 @@ class OptionsCollection {
         if (option instanceof Option) {
             return this.#options.includes(option);
         } else if (typeof option === 'string') {
-            return !!this.#options.find((item) => item.name === option || item.alias === option);
+            return !!this.#options.find(item => item.name === option || item.alias === option);
         }
         throw new Error(`parameter "option" doesnt have a valid type: ${typeof option}`);
     }
 
     includes(...options) {
-        options.reduce((acc, curr) => acc && this.#isOptionInList(curr), true);
+        return options.reduce((acc, curr) => acc && this.#isOptionInList(curr), true);
     }
 
     findByName(name) {
-        return this.#options.find((opt) => opt.name === name);
+        return this.#options.find(opt => opt.name === name);
     }
 }
 

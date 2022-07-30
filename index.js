@@ -7,9 +7,9 @@ const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
-const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles} = require('./utils/template');
+const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles } = require('./utils/template');
 const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const {SRC_DIR_BAD_PARAMS_CODE} = require("./logics/src-dir");
+const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/src-dir');
 
 const { options } = config;
 
@@ -28,6 +28,7 @@ async function main(argv) {
     const cliDir = resolveDirectory(argv);
     const argumentExtractor = new ArgumentExtractor(config);
     const allOptions = new OptionsCollection().addAll(options);
+    const allFlags = new OptionsCollection().addAll(config.flags);
     const flags = argumentExtractor.getFlags(argv);
     const cliOptions = argumentExtractor.getOptions(argv);
 
@@ -38,9 +39,14 @@ async function main(argv) {
     const nameFlag = flags['name'];
     const sourceDirFlag = flags['src-dir'];
     const dryFlag = flags['dry'];
+    const testsModeFlag = flags['test-mode'];
     let shouldSetDifferentName = false;
     //build questions
     const questions = [];
+
+    if(dryFlag){
+        console.log('warning! --dry flag appeared and no actual files will be created')
+    }
 
     if (!cliDir || /\//.test(cliDir)) {
         questions.push({
@@ -48,6 +54,7 @@ async function main(argv) {
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
+            validate: (value) => value.length > 0 || 'You must fill this field',
         });
         shouldSetDifferentName = true;
     }
@@ -82,12 +89,10 @@ async function main(argv) {
         }
 
         if (nameFlag || shouldSetDifferentName) {
-            const nameFlagInstance =
-                nameFlag?.flag ?? config.flags.find((flag) => flag.name === 'name');
+            const nameFlagInstance = nameFlag?.flag ?? allFlags.findByName('name');
             selectedOptions.add(nameFlagInstance);
         }
 
-        console.log(`\r\nScaffolding project in ${filesManager.path}...`);
         const logicPayload = { dir, options: selectedOptions.list, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
@@ -99,14 +104,46 @@ async function main(argv) {
             )
         );
 
-        if(sourceDirFlag){
-            sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value)
+        if (sourceDirFlag) {
+            sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value);
+        }
+
+        if (selectedOptions.includes('tests')) {
+            let testModeValue = testsModeFlag?.value;
+            if (!testsModeFlag) {
+                testModeValue = (
+                    await prompts({
+                        type: 'select',
+                        name: 'testMode',
+                        message: 'Pick Test strategy',
+                        choices: [
+                            {
+                                title: 'combined',
+                                description: 'tests will remain in src/ folder',
+                                value: 'combined',
+                            },
+                            {
+                                title: 'seperated',
+                                description: 'tests fies will be in __tests__/ directory',
+                                value: 'seperated',
+                            },
+                        ],
+                    })
+                ).testMode;
+            }
+
+            const testModeFlagInstance = allFlags.findByName('test-mode');
+            testModeFlagInstance.logic(filesManager, testModeValue);
         }
 
         postProcessFiles(filesManager);
 
-        if(!dryFlag){
-            await createFiles(filesManager)
+        if (!dryFlag) {
+            await createFiles(filesManager);
+        } else {
+            Object.keys(filesManager.relativeFiles).forEach((file) => {
+                console.log(chalk.green`created`, file);
+            });
         }
 
         //printing the final output
@@ -133,7 +170,7 @@ async function main(argv) {
             '\r\n'
         );
     } catch (e) {
-        switch (e?.code){
+        switch (e?.code) {
             case CANCELLED_REQUEST:
                 console.error(chalk.red`Ok nevermind...`);
                 break;
@@ -141,12 +178,11 @@ async function main(argv) {
                 console.error(chalk.red`ERROR! Directory already exists`);
                 break;
             case SRC_DIR_BAD_PARAMS_CODE:
-                console.error(chalk.red`Error! could not execute `)
+                console.error(chalk.red`Error! could not execute `);
                 break;
             default:
                 throw e;
         }
-
     }
 }
 

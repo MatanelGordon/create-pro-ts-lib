@@ -77,7 +77,7 @@ class FilesManager {
         return content;
     }
 
-    set(oldPath, newPath) {
+    change(oldPath, newPath) {
         const content = this.get(oldPath);
         this.#files.set(newPath, content);
         this.#files.delete(oldPath);

@@ -14,9 +14,8 @@ const srcDirLogic = (filesManager, srcDir) => {
     Object.keys(filesManager.relativeFiles)
         .filter(path => /^src\//.test(path))
         .forEach(filePath => {
-            console.log('filePath', filePath);
             const pathWithoutSrc = filePath.split('/').slice(1).join('/');
-            filesManager.set(filePath, path.join(srcDir, pathWithoutSrc));
+            filesManager.change(filePath, path.join(srcDir, pathWithoutSrc));
         })
 }
 

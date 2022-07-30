@@ -6,6 +6,7 @@ const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
 const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/src-dir');
 const nameLogic = require('./logics/name');
+const {testModeLogic} = require('./logics/test-mode');
 
 const chalk = require('chalk');
 
@@ -54,6 +55,10 @@ module.exports = {
         new Option('dry').setDescription('Run the CLI without creating the files'),
 
         new Option('no-colors').setDescription('Disable output colors'),
+
+        new Option('test-mode', {type: 'string'})
+            .setDescription('Sets test mode [seperated / combined]')
+            .setLogic(testModeLogic)
     ],
     files: {
         rename: {
