@@ -36,7 +36,7 @@ async function main(argv) {
     const allFlag = flags['all']?.flag;
     const nameFlag = flags['name'];
     const sourceDirFlag = flags['src-dir'];
-
+    let shouldSetDifferentName = false;
     //build questions
     const questions = [];
 
@@ -47,6 +47,7 @@ async function main(argv) {
             message: 'Project Name',
             initial: (dir ?? '').replaceAll('/', '-'),
         });
+        shouldSetDifferentName = true;
     }
 
     if (cliOptions.length === 0 && !allFlag) {
@@ -74,9 +75,12 @@ async function main(argv) {
             selectedOptions.remove(prettier).remove(eslint).add(prettierEslint);
         }
 
-        if (nameFlag) {
-            selectedOptions.add(nameFlag.flag);
+        if (nameFlag || shouldSetDifferentName) {
+            const nameFlagInstance =
+                nameFlag.flag ?? config.flags.find((flag) => flag.name === 'name');
+            selectedOptions.add(nameFlagInstance);
         }
+
         console.log(`\r\nScaffolding project in ${filesManager.path}...\r\n`);
         const logicPayload = { dir, options: selectedOptions.list, name };
         await loadBaseLogic(filesManager, config, logicPayload);
@@ -94,15 +98,28 @@ async function main(argv) {
         if (sourceDirFlag) {
             await sourceDirFlag.flag.logic(dir, sourceDirFlag.value, logicPayload);
         }
+        const scripts = Object.keys(filesManager.get('package.json').scripts ?? {});
+        const shorthandScripts = ['start', 'build', 'test'];
 
+        const purple = chalk.hex('#c58af9');
         console.log(
-            `${chalk.green`Success!`} \r\n\r\nNow Run: \r\n\t${chalk.hex(
-                '#c58af9'
-            )`cd`} ${chalk.blue(actualDir)} \r\n\t${chalk.hex(
-                '#c58af9'
-            )`npm`} install \r\n\r\nView "scripts" in ${chalk.green(
-                `package.json`
-            )} for available scripts\r\n\r\n`
+            chalk.green`Success!`,
+            '\r\n\r\n',
+            'Now run:',
+            `\r\n\t ${purple`cd`} ${chalk.blue(actualDir)}`,
+            `\r\n\t ${purple`npm`} install`,
+            '\r\n\r\n',
+            'Available Commands:',
+            scripts
+                .map(
+                    (script) =>
+                        `\r\n\t ${purple`npm`} ${
+                            shorthandScripts.includes(script) ? '' : 'run '
+                        }${script} `
+                )
+                .sort()
+                .join(''),
+            '\r\n\r\n'
         );
     } catch (e) {
         if (e?.code === CANCELLED_REQUEST) {
