@@ -8,7 +8,7 @@ const srcDirLogic = (filesManager, srcDir) => {
     if(srcDir === DEFAULT_SOURCE_DIR) return;
 
     if(!srcDir){
-        throw new ErrorWithCode('expected "dir" to be string but received undefined', SRC_DIR_BAD_PARAMS_CODE)
+        throw new ErrorWithCode(`expected "dir" to be string but received ${srcDir}`, SRC_DIR_BAD_PARAMS_CODE)
     }
 
     Object.keys(filesManager.relativeFiles)
