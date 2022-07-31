@@ -26,6 +26,5 @@
         "declaration": true,
         "removeComments": false
     },
-    "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
 }

@@ -2,5 +2,5 @@
     "compilerOptions": {
         "types": ["jest"]
     },
-    "exclude": ["src/**/*.test.ts"]
+    "exclude": ["**/*.test.ts"]
 }
