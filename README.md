@@ -3,8 +3,7 @@
 [![npm](https://img.shields.io/npm/v/create-pro-ts-lib.svg)](https://www.npmjs.com/package/create-pro-ts-lib)
 [![npm](https://img.shields.io/npm/l/create-pro-ts-lib.svg)](https://github.com/MatanelGordon/create-pro-ts-lib/master/LICENSE)
 
-A command-line-interface for building Typescript libraries
-create-pro-ts-lib is a tool to quickly start a Typescript library from a rigid customizable template.
+`create-pro-ts-lib` is a tool to quickly start a Typescript library from a rigid customizable template.
 
 
 - built-in templates for:
@@ -52,7 +51,7 @@ $ pnpm create pro-ts-lib
 
 Then follow the prompts!
 
-##CLI Examples
+## CLI Examples
 
 Due to pro-ts-lib <b>incredible flexibility</b>, there are many aspects of the boilerplate which you can change via flags in the CLI.
 
