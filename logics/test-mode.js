@@ -6,7 +6,8 @@ const testModeLogic = (filesManager, testMode) => {
         Object.keys(filesManager.relativeFiles)
             .filter(path => /\.test\.ts$/.test(path))
             .forEach(testPath => {
-                filesManager.change(testPath, path.join(SEPERATED_TESTS_DIR, testPath));
+                const testPathWithoutSrc = testPath.split('/').slice(1).join('/');
+                filesManager.change(testPath, path.join(SEPERATED_TESTS_DIR, testPathWithoutSrc));
             })
     }
 }
