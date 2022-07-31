@@ -49,7 +49,7 @@ async function main(argv) {
         console.log('warning! --dry flag appeared and no actual files will be created');
     }
 
-    if (!cliDir || /\//.test(cliDir)) {
+    if (!cliDir || /[\/.]/.test(cliDir)) {
         questions.push({
             type: 'text',
             name: 'name',
@@ -152,13 +152,13 @@ async function main(argv) {
         const shorthandScripts = ['start', 'test'];
 
         const purple = chalk.hex('#c58af9');
-        const {blue} = chalk;
+        const { blue } = chalk;
         console.log(
             '\r\n',
             chalk.green.bold`Success!`,
             '\r\n\r\n',
             'Now run:',
-            `\r\n\t ${purple`cd`} ${blue(dir)}`,
+            dir === '.' ? '' : `\r\n\t ${purple`cd`} ${blue(dir)}`,
             `\r\n\t ${purple`npm`} install`,
             '\r\n\r\n',
             'Available Commands:',
@@ -172,7 +172,7 @@ async function main(argv) {
             '\r\n'
         );
     } catch (e) {
-        const {red} = chalk;
+        const { red } = chalk;
         switch (e?.code) {
             case CANCELLED_REQUEST:
                 console.error(red`Ok nevermind...`);
