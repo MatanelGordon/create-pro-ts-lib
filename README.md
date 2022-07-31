@@ -1,6 +1,7 @@
 # create-pro-ts-lib
-[![npm](https://img.shields.io/npm/v/terminalizer.svg)](https://www.npmjs.com/package/terminalizer)
-[![npm](https://img.shields.io/npm/l/terminalizer.svg)](https://github.com/faressoft/terminalizer/blob/master/LICENSE)
+
+[![npm](https://img.shields.io/npm/v/create-pro-ts-lib.svg)](https://www.npmjs.com/package/create-pro-ts-lib)
+[![npm](https://img.shields.io/npm/l/create-pro-ts-lib.svg)](https://github.com/MatanelGordon/create-pro-ts-lib/master/LICENSE)
 
 A command-line-interface for building Typescript libraries
 create-pro-ts-lib is a tool to quickly start a Typescript library from a rigid customizable template.
@@ -29,7 +30,8 @@ my-first-project
 |-- package.json
 |-- tsconfig.json
 ```
-##usage
+## Usage
+
 With NPM⚡:
 
 ```bash
@@ -51,6 +53,7 @@ $ pnpm create pro-ts-lib
 Then follow the prompts!
 
 ##CLI Examples
+
 Due to pro-ts-lib <b>incredible flexibility</b>, there are many aspects of the boilerplate which you can change via flags in the CLI.
 
 This next example creates a new Typescript project with <b>nodemon</b> `-n` and <b>prettier</b> `-p` called `my-project`.
@@ -84,6 +87,7 @@ Each feature has its own flag:
   - etc...⚡
 
 # Advanced Options ⚠️
+
 There are other flags that help you customize your boilerplate:
 
 - `--name` - determine a different name than your directory name
@@ -99,6 +103,7 @@ There are other flags that help you customize your boilerplate:
 - `--no-color`🎨 - run CLI output without color.
 
 ## Note
+
 Since they are quite unique and advanced, The following features __ARE NOT__ supported by the terminal UI prompt and should be used as flags only:
 - `--dry`🏜
 - `--no-color`🎨
@@ -113,4 +118,3 @@ $ npm create pro-ts-lib --no-color --src-dir lib
 will result:
 
 <img src="./assets/example2.png" alt="Size Limit CLI" style="max-width: 500px">
-
