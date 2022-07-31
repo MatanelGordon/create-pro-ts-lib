@@ -115,7 +115,7 @@ async function main(argv) {
                     await prompts({
                         type: 'select',
                         name: 'testMode',
-                        message: 'Pick Test strategy',
+                        message: 'Pick tests location',
                         choices: [
                             {
                                 title: 'combined',
