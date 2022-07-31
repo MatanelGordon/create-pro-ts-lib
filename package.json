@@ -15,7 +15,17 @@
         "type": "git",
         "url": "git+https://github.com/MatanelGordon/create-pro-ts-lib.git"
     },
-    "keywords": [],
+    "keywords": [
+        "ts-lib",
+        "pro-ts-lib",
+        "create-ts-lib",
+        "create-pro-ts-lib",
+        "typescript",
+        "ts-boilerplate",
+        "ts-templates",
+        "ts-lib-cli",
+        "cli"
+    ],
     "author": "",
     "license": "ISC",
     "bugs": {
