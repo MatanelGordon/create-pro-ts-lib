@@ -1,0 +1,46 @@
+{
+    "name": "create-pro-ts-lib",
+    "version": "1.0.0",
+    "description": "A command-line-interface for building Typescript libraries",
+    "main": "index.js",
+    "scripts": {
+        "run": "node ./index.js my-proj",
+        "format": "prettier --ignore-path .gitignore -w ."
+    },
+    "bin": {
+        "create-pro-ts-lib": "./index.js",
+        "cptl": "./index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MatanelGordon/create-pro-ts-lib.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/MatanelGordon/create-pro-ts-lib/issues"
+    },
+    "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
+    "files": [
+        "templates/",
+        "assets/"
+    ],
+    "dependencies": {
+        "chalk": "4",
+        "chavascript": "^0.1.3",
+        "deepmerge": "^4.2.2",
+        "prompts": "^2.4.2",
+        "yargs": "^17.5.1"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.182",
+        "@types/node": "16",
+        "@types/prompts": "^2.0.14",
+        "@types/yargs": "^17.0.10",
+        "add": "^2.0.6",
+        "lodash": "^4.17.21",
+        "prettier": "^2.7.1",
+        "yarn": "^1.22.19"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "private": false,
+    "version": "1.0.0",
+    "licence": "MIT",
+    "main": "dist/index.js",
+    "files": ["dist/**/*"],
+    "scripts": {
+        "build": "tsc -p ./tsconfig.json"
+    },
+    "devDependencies": {
+        "typescript": "^4.7.4"
+    }
+}
