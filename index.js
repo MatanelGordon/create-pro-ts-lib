@@ -41,11 +41,12 @@ async function main(argv) {
     const dryFlag = flags['dry'];
     const testsModeFlag = flags['test-mode'];
     let shouldSetDifferentName = false;
+
     //build questions
     const questions = [];
 
-    if(dryFlag){
-        console.log('warning! --dry flag appeared and no actual files will be created')
+    if (dryFlag) {
+        console.log('warning! --dry flag appeared and no actual files will be created');
     }
 
     if (!cliDir || /\//.test(cliDir)) {
@@ -54,7 +55,7 @@ async function main(argv) {
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
-            validate: (value) => value.length > 0 || 'You must fill this field',
+            validate: value => value.length > 0 || 'You must fill this field',
         });
         shouldSetDifferentName = true;
     }
@@ -96,7 +97,7 @@ async function main(argv) {
         const logicPayload = { dir, options: selectedOptions.list, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
-            selectedOptions.list.map(async (option) =>
+            selectedOptions.list.map(async option =>
                 option?.logic(filesManager, config, {
                     ...logicPayload,
                     optionValue: argv[option.name],
@@ -141,7 +142,7 @@ async function main(argv) {
         if (!dryFlag) {
             await createFiles(filesManager);
         } else {
-            Object.keys(filesManager.relativeFiles).forEach((file) => {
+            Object.keys(filesManager.relativeFiles).forEach(file => {
                 console.log(chalk.green`created`, file);
             });
         }
@@ -151,18 +152,19 @@ async function main(argv) {
         const shorthandScripts = ['start', 'build', 'test'];
 
         const purple = chalk.hex('#c58af9');
+        const {blue} = chalk;
         console.log(
             '\r\n',
             chalk.green.bold`Success!`,
             '\r\n\r\n',
             'Now run:',
-            `\r\n\t ${purple`cd`} ${chalk.blue(dir)}`,
+            `\r\n\t ${purple`cd`} ${blue(dir)}`,
             `\r\n\t ${purple`npm`} install`,
             '\r\n\r\n',
             'Available Commands:',
             scripts
                 .map(
-                    (script) =>
+                    script =>
                         `${purple`npm`} ${shorthandScripts.includes(script) ? '' : 'run '}${script}`
                 )
                 .sort()
@@ -170,15 +172,16 @@ async function main(argv) {
             '\r\n'
         );
     } catch (e) {
+        const {red} = chalk;
         switch (e?.code) {
             case CANCELLED_REQUEST:
-                console.error(chalk.red`Ok nevermind...`);
+                console.error(red`Ok nevermind...`);
                 break;
             case TEMPLATE_ERROR.DIR_EXISTS_ERROR:
-                console.error(chalk.red`ERROR! Directory already exists`);
+                console.error(red`ERROR! Directory already exists`);
                 break;
             case SRC_DIR_BAD_PARAMS_CODE:
-                console.error(chalk.red`Error! could not execute `);
+                console.error(red`Error! could not execute `);
                 break;
             default:
                 throw e;
