@@ -52,7 +52,7 @@ $ pnpm create pro-ts-lib
 
 Then follow the prompts!
 
-##CLI Examples
+## CLI Examples
 
 Due to pro-ts-lib <b>incredible flexibility</b>, there are many aspects of the boilerplate which you can change via flags in the CLI.
 
