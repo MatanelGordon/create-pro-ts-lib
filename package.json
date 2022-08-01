@@ -1,6 +1,6 @@
 {
     "name": "create-pro-ts-lib",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "A command-line-interface for building Typescript libraries",
     "main": "index.js",
     "scripts": {
@@ -42,14 +42,14 @@
         "chalk": "4",
         "deepmerge": "^4.2.2",
         "prompts": "^2.4.2",
-        "yargs": "^17.5.1"
+        "yargs": "^17.5.1",
+        "lodash": "^4.17.21"
     },
     "devDependencies": {
         "@types/lodash": "^4.14.182",
         "@types/node": "16",
         "@types/prompts": "^2.0.14",
         "@types/yargs": "^17.0.10",
-        "lodash": "^4.17.21",
         "prettier": "^2.7.1",
         "yarn": "^1.22.19"
     }
