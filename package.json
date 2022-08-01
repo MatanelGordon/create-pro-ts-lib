@@ -34,7 +34,9 @@
     "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
     "files": [
         "templates/",
-        "assets/"
+        "logics/",
+        "utils/",
+        "./config.js"
     ],
     "dependencies": {
         "chalk": "4",
