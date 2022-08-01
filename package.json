@@ -1,6 +1,6 @@
 {
     "name": "create-pro-ts-lib",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "A command-line-interface for building Typescript libraries",
     "main": "index.js",
     "scripts": {
@@ -34,7 +34,9 @@
     "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
     "files": [
         "templates/",
-        "assets/"
+        "logics/",
+        "utils/",
+        "./config.js"
     ],
     "dependencies": {
         "chalk": "4",
