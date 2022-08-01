@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/create-pro-ts-lib.svg)](https://www.npmjs.com/package/create-pro-ts-lib)
 [![npm](https://img.shields.io/npm/l/create-pro-ts-lib.svg)](https://github.com/MatanelGordon/create-pro-ts-lib/master/LICENSE)
 
-`create-pro-ts-lib` is a tool to quickly start a Typescript library from a rigid customizable template.
+`create-pro-ts-lib` is a CLI tool to quickly start a Typescript library from a rigid customizable template.
 
 - built-in templates for:
   <br/>[📂 Nodemon](https://nodemon.io/)
