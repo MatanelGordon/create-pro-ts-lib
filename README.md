@@ -50,13 +50,18 @@ With PNPM⚡:
 $ pnpm create pro-ts-lib
 ```
 
+Then follow the prompts!
+
+
 ## Bonus Shorthand
+
+This would do the same:
 
 ```bash
 $ npx cptl
 ```
 
-Then follow the prompts!
+
 
 # It's Not Only for Libraries
 
