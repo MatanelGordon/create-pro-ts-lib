@@ -6,10 +6,10 @@
 `create-pro-ts-lib` is a tool to quickly start a Typescript library from a rigid customizable template.
 
 - built-in templates for:
-  <br/>[📂Nodemon](https://nodemon.io/)
-  <br/>[🧪Tests [Jest]](https://jestjs.io/)
-  <br/>[✨Prettier](https://prettier.io/)
-  <br/>[👮🏻‍Eslint](https://eslint.org/)
+  <br/>[📂 Nodemon](https://nodemon.io/)
+  <br/>[🧪 Tests [Jest]](https://jestjs.io/)
+  <br/>[✨ Prettier](https://prettier.io/)
+  <br/>[👮🏻‍ Eslint](https://eslint.org/)
 
 these templates can be combined to allow maximum flexibility for your library.
 
@@ -80,7 +80,7 @@ $ npx cptl
 - change `package.json` accordingly
   - `licence`
   - `files` - remove entirely
-  - `private: true` 
+  - `private: true`
   - etc...
 
 
