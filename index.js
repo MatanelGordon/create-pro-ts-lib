@@ -60,7 +60,7 @@ async function main(argv) {
         shouldSetDifferentName = true;
     }
 
-    if (cliOptions.length === 0 && !allFlag) {
+    if (allFlag || cliOptions.length === 0) {
         questions.push(optionsToPrompts(options));
     }
 
