@@ -4,7 +4,7 @@ const ErrorWithCode = require('./ErrorWithCode');
 const NOOP = () => {};
 const CANCELLED_REQUEST = 499;
 const promptsWrapper = (questions, onCancel = NOOP, onSubmit = NOOP) => {
-    const onCancelWrapper = (prompt) => {
+    const onCancelWrapper = prompt => {
         onCancel(prompt);
         throw new ErrorWithCode('cancelled prompts', CANCELLED_REQUEST);
     };

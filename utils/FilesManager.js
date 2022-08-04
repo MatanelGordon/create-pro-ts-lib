@@ -20,7 +20,7 @@ class FilesManager {
     @param {object} config -  App configuration
      */
     constructor(dir) {
-        this.#path = path.isAbsolute(dir) ? dir : path.join(__dirname, '../', dir);
+        this.#path = path.isAbsolute(dir) ? dir : path.join(process.cwd(), '../', dir);
         this.#files = new Map();
     }
 
@@ -63,7 +63,7 @@ class FilesManager {
             }
             setterValue = merge(currentObject, value);
         } else if (!force && currentValue && isIgnoreFile) {
-            setterValue = [currentValue, value].map((content) => content.trim()).join('\n');
+            setterValue = [currentValue, value].map(content => content.trim()).join('\n');
         }
         this.#files.set(fileName, setterValue);
         return this;
@@ -71,8 +71,8 @@ class FilesManager {
 
     get(filename) {
         const content = this.#files.get(filename);
-        if(typeof content === 'object'){
-            return {...content}
+        if (typeof content === 'object') {
+            return { ...content };
         }
         return content;
     }

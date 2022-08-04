@@ -1,5 +1,5 @@
 const ErrorWithCode = require('./ErrorWithCode');
-const resolveDirectory = (argv) => {
+const resolveDirectory = argv => {
     const dirs = argv._;
     if (dirs.length > 1) {
         throw new Error(`expected 1 directory, received ${dirs.length} - ${dirs}`);
@@ -38,7 +38,7 @@ class ArgumentExtractor {
 
     getFlags(argv) {
         return this.#config.flags
-            .filter((flag) => argv[flag.name])
+            .filter(flag => argv[flag.name])
             .reduce(
                 (obj, curr) =>
                     Object.assign(obj, {
@@ -52,7 +52,7 @@ class ArgumentExtractor {
     }
 
     getOptions(argv) {
-        return this.#config.options.filter((option) => argv[option.name]);
+        return this.#config.options.filter(option => argv[option.name]);
     }
 }
 

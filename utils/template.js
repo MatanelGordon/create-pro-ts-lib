@@ -20,9 +20,9 @@ const stringifyFile = (filePath, content) => {
     return strContent;
 };
 
-const recursiveReadDir = async (dirPath) => {
+const recursiveReadDir = async dirPath => {
     const entities = await readdir(dirPath);
-    const stats = await Promise.all(entities.map((entity) => lstat(path.join(dirPath, entity))));
+    const stats = await Promise.all(entities.map(entity => lstat(path.join(dirPath, entity))));
     const files = [];
 
     await Promise.all(
@@ -30,7 +30,7 @@ const recursiveReadDir = async (dirPath) => {
             if (stat.isDirectory()) {
                 const newPath = path.join(dirPath, entity);
                 const dirFiles = await recursiveReadDir(newPath);
-                const relativeDirFiles = dirFiles.map((file) => path.join(entity, file));
+                const relativeDirFiles = dirFiles.map(file => path.join(entity, file));
                 files.push(...relativeDirFiles);
                 return;
             }
@@ -43,7 +43,7 @@ const recursiveReadDir = async (dirPath) => {
 
 const readTemplateFiles = async (templatePath, config = {}) => {
     const filesNames = await recursiveReadDir(templatePath);
-    const filesPaths = filesNames.map((name) => path.join(templatePath, name));
+    const filesPaths = filesNames.map(name => path.join(templatePath, name));
     const files = await Promise.all(
         _.zip(filesNames, filesPaths).map(async ([name, filePath]) => {
             const contentBuffer = await readFile(filePath);
@@ -58,7 +58,7 @@ const readTemplateFiles = async (templatePath, config = {}) => {
         })
     );
 
-    return files.map((item) => ({
+    return files.map(item => ({
         ...item,
         name: config?.files?.rename?.[item.name] ?? item.name,
     }));
@@ -106,7 +106,7 @@ function sortPackageJsonObj(packageJson) {
     ].reduce((obj, key) => Object.assign(obj, { [key]: packageJson[key] }), {});
 
     //sort json of specific keys
-    ['devDependencies', 'dependencies', 'scripts'].forEach((key) => {
+    ['devDependencies', 'dependencies', 'scripts'].forEach(key => {
         sortedPackageJson[key] = sortJson(packageJson[key]);
     });
 
@@ -167,7 +167,7 @@ function postProcessFiles(filesManager) {
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
 }
 
-const createTemplateFilesDownloader = (path) => async (filesManager, config) => {
+const createTemplateFilesDownloader = path => async (filesManager, config) => {
     const files = await readTemplateFiles(path, config);
 
     files.forEach(({ name, content }) => {
