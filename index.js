@@ -2,6 +2,7 @@
 const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
+const path = require('path');
 const { promptsWrapper: prompts, CANCELLED_REQUEST } = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base');
@@ -60,7 +61,7 @@ async function main(argv) {
         shouldSetDifferentName = true;
     }
 
-    if (allFlag || cliOptions.length === 0) {
+    if (!allFlag || (cliOptions.length === 0 && !allFlags)) {
         questions.push(optionsToPrompts(options));
     }
 
@@ -156,6 +157,8 @@ async function main(argv) {
         console.log(
             '\r\n',
             chalk.green.bold`Success!`,
+            '\r\n',
+            `path: ${purple(path.join(process.cwd(), dir))}`,
             '\r\n\r\n',
             'Now run:',
             dir === '.' ? '' : `\r\n\t ${purple`cd`} ${blue(dir)}`,
