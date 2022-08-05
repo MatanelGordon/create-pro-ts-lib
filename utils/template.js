@@ -21,6 +21,7 @@ const stringifyFile = (filePath, content) => {
 };
 
 const recursiveReadDir = async dirPath => {
+    if(!existsSync(dirPath)) return [];
     const entities = await readdir(dirPath);
     const stats = await Promise.all(entities.map(entity => lstat(path.join(dirPath, entity))));
     const files = [];
@@ -64,7 +65,7 @@ const readTemplateFiles = async (templatePath, config = {}) => {
     }));
 };
 
-function sortJson(deepObject, enableSortArrays = true) {
+const sortJson = (deepObject, enableSortArrays = true) => {
     if (!deepObject) return {};
     return Object.entries(deepObject)
         .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
@@ -86,7 +87,7 @@ function sortJson(deepObject, enableSortArrays = true) {
         }, {});
 }
 
-function sortPackageJsonObj(packageJson) {
+const sortPackageJsonObj = (packageJson) => {
     const sortedPackageJson = [
         '$schema',
         'name',
@@ -115,7 +116,7 @@ function sortPackageJsonObj(packageJson) {
 
 const DIR_EXISTS_ERROR = 409;
 const DEFAULT_OPTIONS = { forceWrite: false };
-async function createFiles(filesManager, { forceWrite } = DEFAULT_OPTIONS) {
+const createFiles = async (filesManager, { forceWrite } = DEFAULT_OPTIONS)  => {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
     const signal = abortion.signal;
@@ -126,9 +127,10 @@ async function createFiles(filesManager, { forceWrite } = DEFAULT_OPTIONS) {
 
     process.once('SIGINT', onCancel);
 
-    const isDirExists = existsSync(filesManager.path);
+    const isDirExists = existsSync(filesManager.path)
+    const isDirGoodToHost = isDirExists && (await readdir(filesManager.path)).length === 0;
 
-    if (isDirExists && !forceWrite) {
+    if (!isDirGoodToHost && !forceWrite) {
         throw new ErrorWithCode(
             `EEXIST: dir '${path.dirname(filesManager.path)}' already exists`,
             DIR_EXISTS_ERROR
@@ -159,7 +161,7 @@ async function createFiles(filesManager, { forceWrite } = DEFAULT_OPTIONS) {
     }
 }
 
-function postProcessFiles(filesManager) {
+const postProcessFiles = (filesManager) => {
     const packageJson = sortPackageJsonObj(filesManager.get('package.json'));
     const tsconfig = filesManager.get('tsconfig.json');
 
@@ -167,8 +169,9 @@ function postProcessFiles(filesManager) {
     filesManager.add('tsconfig.json', sortJson(tsconfig), true);
 }
 
-const createTemplateFilesDownloader = path => async (filesManager, config) => {
-    const files = await readTemplateFiles(path, config);
+const createTemplateFilesDownloader = dirPath => async (filesManager, config) => {
+    const fullPath = path.join(__dirname, '../', dirPath);
+    const files = await readTemplateFiles(fullPath, config);
 
     files.forEach(({ name, content }) => {
         filesManager.add(name, content);
