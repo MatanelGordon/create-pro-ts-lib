@@ -1,6 +1,6 @@
 {
     "name": "create-pro-ts-lib",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "A command-line-interface for building Typescript libraries",
     "main": "index.js",
     "scripts": {
