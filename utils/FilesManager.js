@@ -20,7 +20,7 @@ class FilesManager {
     @param {object} config -  App configuration
      */
     constructor(dir) {
-        this.#path = path.isAbsolute(dir) ? dir : path.join(process.cwd(), '../', dir);
+        this.#path = path.isAbsolute(dir) ? dir : path.join(process.cwd(), dir);
         this.#files = new Map();
     }
 
@@ -80,7 +80,11 @@ class FilesManager {
     change(oldPath, newPath) {
         const content = this.get(oldPath);
         this.#files.set(newPath, content);
-        this.#files.delete(oldPath);
+        this.delete(oldPath);
+    }
+
+    delete(path){
+        this.#files.delete(path);
     }
 }
 
