@@ -5,11 +5,11 @@
 
 `create-pro-ts-lib` is a CLI tool to quickly start a Typescript library from a rigid customizable template.
 
-- built-in templates for:
-  <br/>[📂 Nodemon](https://nodemon.io/)
-  <br/>[🧪 Tests [Jest]](https://jestjs.io/)
-  <br/>[✨ Prettier](https://prettier.io/)
-  <br/>[👮🏻‍ Eslint](https://eslint.org/)
+-   built-in templates for:
+    <br/>[📂 Nodemon](https://nodemon.io/)
+    <br/>[🧪 Tests [Jest]](https://jestjs.io/)
+    <br/>[✨ Prettier](https://prettier.io/)
+    <br/>[👮🏻‍ Eslint](https://eslint.org/)
 
 these templates can be combined to allow maximum flexibility for your library.
 
@@ -52,7 +52,6 @@ $ pnpm create pro-ts-lib
 
 Then follow the prompts!
 
-
 ## Bonus Shorthand
 
 This would do the same:
@@ -61,30 +60,28 @@ This would do the same:
 $ npx cptl
 ```
 
-
-
 # It's Not Only for Libraries
 
 <p style="font-size: 16px; font-weight: bold">
     You can use it for <span style="color:#11CCEE">projects</span> as well, but remember:
 </p>
 
-- change `tsconfig.json` accordingly:
-  - `lib` - add if needed
-  - `module`
-  - `target`
-  - `declarations: false`
-  - etc...
+-   change `tsconfig.json` accordingly:
 
+    -   `lib` - add if needed
+    -   `module`
+    -   `target`
+    -   `declarations: false`
+    -   etc...
 
-- change `package.json` accordingly
-  - `licence`
-  - `files` - remove entirely
-  - `private: true`
-  - etc...
+-   change `package.json` accordingly
 
+    -   `licence`
+    -   `files` - remove entirely
+    -   `private: true`
+    -   etc...
 
-- have fun programming `:)`
+-   have fun programming `:)`
 
 ## CLI Examples
 
@@ -124,36 +121,36 @@ $ npm create pro-ts-lib my-project --all
 
 Each feature has its own flag:
 
-- Tests `--tests` / `-t`
-- Nodemon `--nodemon` / `-n`
-- Prrettier `--prettier` / `-p`
-- etc...⚡
+-   Tests `--tests` / `-t`
+-   Nodemon `--nodemon` / `-n`
+-   Prrettier `--prettier` / `-p`
+-   etc...⚡
 
 # Advanced Options ⚠️
 
 There are other flags that help you customize your boilerplate:
 
-- `--name` - determine a different name than your directory name
-- `--all` - ADD ALL FEATURES. 🔥
-- `--src-dir` - determine where `src/` files should be. 📂
+-   `--name` - determine a different name than your directory name
+-   `--all` - ADD ALL FEATURES. 🔥
+-   `--src-dir` - determine where `src/` files should be. 📂
 
-- `--test-mode` - determine test mode. 🧪
-    - seperated - in a separate `__tests__` folder.
-    - combined - in `src/` folder next to `index.ts` .
+-   `--test-mode` - determine test mode. 🧪
+    -   seperated - in a separate `__tests__` folder.
+    -   combined - in `src/` folder next to `index.ts` .
 
 There are also options to handle the CLI:
 
-- `--dry`🏜 - run the CLI with no consequences.
-- `--no-color`🎨 - run CLI output without color.
+-   `--dry`🏜 - run the CLI with no consequences.
+-   `--no-color`🎨 - run CLI output without color.
 
 ## Note
 
-Since they are quite unique and advanced, The following features __ARE NOT__ supported by the terminal UI prompt and
+Since they are quite unique and advanced, The following features **ARE NOT** supported by the terminal UI prompt and
 should be used as flags only:
 
-- `--dry`🏜
-- `--no-color`🎨
-- `--src-dir`📂
+-   `--dry`🏜
+-   `--no-color`🎨
+-   `--src-dir`📂
 
 But don't worry, you can use them alongside the UI prompts, for example:
 

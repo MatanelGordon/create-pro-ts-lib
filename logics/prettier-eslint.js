@@ -1,17 +1,14 @@
-const { readTemplateFiles } = require('../utils/template');
-const _ = require('lodash');
+const { createTemplateFilesDownloader } = require('../utils/template');
+const { prettierLogic } = require('./prettier');
+const { eslintLogic } = require('./eslint');
+
 const TEMPLATE_PATH = 'templates/prettier-eslint';
-
+const downloadPrettierEslint = createTemplateFilesDownloader(TEMPLATE_PATH);
 const prettierEslintLogic = async (filesManager, config) => {
-    const prettierEslintFiles = await readTemplateFiles(TEMPLATE_PATH, config);
-    const prettierFiles = await readTemplateFiles('templates/prettier', config);
-    const eslintFiles = await readTemplateFiles('templates/eslint', config);
-
-    _.remove(eslintFiles, ({ name }) => name === '.eslintrc.cjs');
-
-    [...prettierFiles, ...eslintFiles, ...prettierEslintFiles].forEach(({ name, content }) => {
-        filesManager.add(name, content);
-    });
+    await eslintLogic(filesManager, config);
+    filesManager.delete('.eslintrc.cjs');
+    await prettierLogic(filesManager, config);
+    await downloadPrettierEslint(filesManager, config);
 };
 
 module.exports = { prettierEslintLogic, TEMPLATE_PATH };
