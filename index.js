@@ -54,13 +54,19 @@ async function main(argv) {
         console.warn(`WARNING! can't use --name without specifying dir`)
     }
 
-    if (!cliDir || (/[\/.]/.test(cliDir) && !nameFlag.value)) {
+    if (!cliDir || (/[\/.]/.test(cliDir) && !nameFlag)) {
         questions.push({
             type: 'text',
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
-            validate: value => value.length > 0 || 'You must fill this field',
+            validate: value => {
+                if(value.length === 0)
+                    return 'You must fill this field'
+                else if (!/[a-zA-z0-9_\-@\/]/.test(value))
+                    return 'This name contains illegal characters'
+                return true;
+            } ,
         });
         shouldSetDifferentName = true;
     }
