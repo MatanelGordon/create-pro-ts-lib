@@ -47,10 +47,14 @@ async function main(argv) {
     const questions = [];
 
     if (dryFlag) {
-        console.log('warning! --dry flag appeared and no actual files will be created');
+        console.warn('WARNING! --dry flag appeared and no actual files will be created');
     }
 
-    if (!cliDir || /[\/.]/.test(cliDir)) {
+    if(!cliDir && nameFlag){
+        console.warn(`WARNING! can't use --name without specifying dir`)
+    }
+
+    if (!cliDir || (/[\/.]/.test(cliDir) && !nameFlag.value)) {
         questions.push({
             type: 'text',
             name: 'name',
@@ -182,6 +186,9 @@ async function main(argv) {
                 break;
             case TEMPLATE_ERROR.DIR_EXISTS_ERROR:
                 console.error(red`ERROR! Directory already exists`);
+                break;
+            case TEMPLATE_ERROR.DIR_NOT_EMPTY_ERROR:
+                console.error(red`ERROR! Directory contains files`)
                 break;
             case SRC_DIR_BAD_PARAMS_CODE:
                 console.error(red`Error! could not execute `);
