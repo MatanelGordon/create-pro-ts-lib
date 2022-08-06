@@ -20,6 +20,13 @@ const stringifyFile = (filePath, content) => {
     return strContent;
 };
 
+const readdirFiles = async dirPath => {
+    if(!existsSync(dirPath)) return [];
+    const filesNames = await readdir(dirPath);
+    const statuses =  await Promise.all(filesNames.map(name => lstat(path.join(dirPath, name))))
+    return filesNames.filter((name, i) => statuses[i].isFile())
+}
+
 const recursiveReadDir = async dirPath => {
     if(!existsSync(dirPath)) return [];
     const entities = await readdir(dirPath);
@@ -115,26 +122,36 @@ const sortPackageJsonObj = (packageJson) => {
 }
 
 const DIR_EXISTS_ERROR = 409;
+const DIR_NOT_EMPTY_ERROR = "0X80070091";
+
 const DEFAULT_OPTIONS = { forceWrite: false };
 const createFiles = async (filesManager, { forceWrite } = DEFAULT_OPTIONS)  => {
     const filesEntries = Object.entries(filesManager.files);
     const abortion = new AbortController();
     const signal = abortion.signal;
 
-    const onCancel = () => {
+    process.once('SIGINT', () => {
         abortion.abort();
-    };
+    });
 
-    process.once('SIGINT', onCancel);
+    const isRootDir = !path.relative(process.cwd(), filesManager.path);
+    const isDirExists = !isRootDir && existsSync(filesManager.path);
 
-    const isDirExists = existsSync(filesManager.path)
-    const isDirGoodToHost = isDirExists && (await readdir(filesManager.path)).length === 0;
+    const dirFiles = await readdirFiles(filesManager.path);
+    const isDirEmptyOfFiles = dirFiles.length === 0;
 
-    if (!isDirGoodToHost && !forceWrite) {
+    if (isDirExists && !forceWrite) {
         throw new ErrorWithCode(
             `EEXIST: dir '${path.dirname(filesManager.path)}' already exists`,
             DIR_EXISTS_ERROR
         );
+    }
+
+    if(!isDirEmptyOfFiles && !forceWrite){
+        throw new ErrorWithCode(
+            `ENOTEMPTY: dir '${path.dirname(filesManager.path)}' is not empty`,
+            DIR_NOT_EMPTY_ERROR
+        )
     }
 
     try {
@@ -183,5 +200,5 @@ module.exports = {
     postProcessFiles,
     createFiles,
     createTemplateFilesDownloader,
-    ERRORS: { DIR_EXISTS_ERROR },
+    ERRORS: { DIR_EXISTS_ERROR, DIR_NOT_EMPTY_ERROR },
 };

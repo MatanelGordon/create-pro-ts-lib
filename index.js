@@ -47,16 +47,26 @@ async function main(argv) {
     const questions = [];
 
     if (dryFlag) {
-        console.log('warning! --dry flag appeared and no actual files will be created');
+        console.warn('WARNING! --dry flag appeared and no actual files will be created');
     }
 
-    if (!cliDir || /[\/.]/.test(cliDir)) {
+    if(!cliDir && nameFlag){
+        console.warn(`WARNING! can't use --name without specifying dir`)
+    }
+
+    if (!cliDir || (/[\/.]/.test(cliDir) && !nameFlag)) {
         questions.push({
             type: 'text',
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
-            validate: value => value.length > 0 || 'You must fill this field',
+            validate: value => {
+                if(value.length === 0)
+                    return 'You must fill this field'
+                else if (!/[a-zA-z0-9_\-@\/]/.test(value))
+                    return 'This name contains illegal characters'
+                return true;
+            } ,
         });
         shouldSetDifferentName = true;
     }
@@ -182,6 +192,9 @@ async function main(argv) {
                 break;
             case TEMPLATE_ERROR.DIR_EXISTS_ERROR:
                 console.error(red`ERROR! Directory already exists`);
+                break;
+            case TEMPLATE_ERROR.DIR_NOT_EMPTY_ERROR:
+                console.error(red`ERROR! Directory contains files`)
                 break;
             case SRC_DIR_BAD_PARAMS_CODE:
                 console.error(red`Error! could not execute `);
