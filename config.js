@@ -7,6 +7,7 @@ const { prettierEslintLogic } = require('./logics/prettier-eslint');
 const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/src-dir');
 const nameLogic = require('./logics/name');
 const { testModeLogic } = require('./logics/test-mode');
+const { huskyLogic } = require('./logics/husky');
 
 const chalk = require('chalk');
 
@@ -36,6 +37,12 @@ module.exports = {
             .setColor(chalk.green)
             .setInitialSelected(false)
             .setLogic(testsLogic),
+
+        new Option('husky')
+            .setDescription('Adds husky (with lint-staged)')
+            .setColor(chalk.blue)
+            .setInitialSelected(false)
+            .setLogic(huskyLogic),
 
         new Option('prettier-eslint', { visible: false })
             .setDescription('Adds Prettier + Eslint')

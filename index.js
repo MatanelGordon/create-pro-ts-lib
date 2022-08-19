@@ -105,7 +105,7 @@ async function main(argv) {
             selectedOptions.add(nameFlagInstance);
         }
 
-        const logicPayload = { dir, options: selectedOptions.list, name, flags };
+        const logicPayload = { dir, options: selectedOptions, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
             selectedOptions.list.map(async option =>
