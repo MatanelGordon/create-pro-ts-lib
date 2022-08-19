@@ -159,7 +159,9 @@ async function main(argv) {
         }
 
         //printing the final output
-        const scripts = Object.keys(filesManager.get('package.json').scripts ?? {});
+        const scripts = Object
+            .keys(filesManager.get('package.json').scripts ?? {})
+            .filter(x => !(/^pre/.test(x) || /^post/.test(x)));
         const shorthandScripts = ['start', 'test'];
 
         const purple = chalk.hex('#c58af9');

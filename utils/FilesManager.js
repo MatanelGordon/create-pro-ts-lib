@@ -86,7 +86,7 @@ class FilesManager {
     // todo: work on it
     replace(path, valuesDict){
         const content = this.get(path);
-        const regexp = new RegExp(Object.keys(valuesDict).join('|'), "gi");
+        const regexp = new RegExp(Object.keys(valuesDict).join('|'));
         const newContent = content.replace(regexp, match => valuesDict[match]);
         this.add(path, newContent, true);
         return this;

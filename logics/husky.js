@@ -16,13 +16,12 @@ const huskyLogic = async (filesManager, config, {options}) => {
 
     filesManager.add('.lintstagedrc.json', lintStagedConfig);
 
-    const replacement = {"#script":'echo "Good luck with your push <3"'};
+    const replacement = {"#SCRIPT":'echo "Good luck with your push <3"'};
     if(options.includes("tests")){
         replacement["#script"] = "npm test";
     }
 
     filesManager.replace('.husky/pre-push', replacement);
-    console.log(filesManager.get('.husky/pre-push'));
 }
 
 module.exports = {huskyLogic};
