@@ -3,14 +3,14 @@ const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
 const path = require('path');
-const { promptsWrapper: prompts, CANCELLED_REQUEST } = require('./utils/prompts');
+const { promptsWrapper: prompts, CANCELLED_REQUEST, optionsToPromptsChoices} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles } = require('./utils/template');
-const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/src-dir');
+const { toYargsOptionsParam, OptionsCollection } = require('./utils/options');
+const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/flags/src-dir');
 
 const { options } = config;
 
@@ -60,7 +60,7 @@ async function main(argv) {
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
-            validate: value => {
+            "validate": value => {
                 if(value.length === 0)
                     return 'You must fill this field'
                 else if (!/[a-zA-z0-9_\-@\/]/.test(value))
@@ -72,7 +72,16 @@ async function main(argv) {
     }
 
     if (!allFlag || (cliOptions.length === 0 && !allFlags)) {
-        questions.push(optionsToPrompts(options));
+        const choices = optionsToPromptsChoices(options);
+        questions.push({
+            type: 'multiselect',
+            name: 'options',
+            message: 'Select your features',
+            hint: '- Space to select. Return to submit',
+            instructions: false,
+            min: 1,
+            choices
+        })
     }
 
     if (flags['no-colors']) {
@@ -120,34 +129,6 @@ async function main(argv) {
             sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value);
         }
 
-        if (selectedOptions.includes('tests')) {
-            let testModeValue = testsModeFlag?.value;
-            if (!testsModeFlag) {
-                testModeValue = (
-                    await prompts({
-                        type: 'select',
-                        name: 'testMode',
-                        message: 'Pick tests location',
-                        choices: [
-                            {
-                                title: 'combined',
-                                description: 'tests will remain in src/ folder',
-                                value: 'combined',
-                            },
-                            {
-                                title: 'seperated',
-                                description: 'tests fies will be in __tests__/ directory',
-                                value: 'seperated',
-                            },
-                        ],
-                    })
-                ).testMode;
-            }
-
-            const testModeFlagInstance = allFlags.findByName('test-mode');
-            testModeFlagInstance.logic(filesManager, testModeValue);
-        }
-
         postProcessFiles(filesManager);
 
         if (!dryFlag) {
@@ -162,6 +143,7 @@ async function main(argv) {
         const scripts = Object
             .keys(filesManager.get('package.json').scripts ?? {})
             .filter(x => !(/^pre/.test(x) || /^post/.test(x)));
+
         const shorthandScripts = ['start', 'test'];
 
         const purple = chalk.hex('#c58af9');
