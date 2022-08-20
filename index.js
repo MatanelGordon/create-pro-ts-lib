@@ -71,7 +71,7 @@ async function main(argv) {
         shouldSetDifferentName = true;
     }
 
-    if (!allFlag || (cliOptions.length === 0 && !allFlags)) {
+    if (!allFlag && cliOptions.length === 0) {
         const choices = optionsToPromptsChoices(options);
         questions.push({
             type: 'multiselect',
@@ -156,6 +156,7 @@ async function main(argv) {
             '\r\n\r\n',
             'Now run:',
             dir === '.' ? '' : `\r\n\t ${purple`cd`} ${blue(dir)}`,
+            selectedOptions.includes('husky') ? `\r\n\t ${chalk.greenBright`// git init or clone a repo`}` : '',
             `\r\n\t ${purple`npm`} install`,
             '\r\n\r\n',
             'Available Commands:',
