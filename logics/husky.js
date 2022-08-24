@@ -6,7 +6,7 @@ const huskyLogic = async (filesManager, config, { options }) => {
 	console.log(
 		chalk.hex(
 			'#FF7F11'
-		)`**Warning: Using husky requires you to use a git repository. Either clone or create a new repository`
+		)`**Warning: Using husky requires you to use git. Either clone or create a repository BEFORE INSTALLATION`
 	);
 	await downLoadHusky(filesManager, config);
 	const lintStagedConfig = {};
