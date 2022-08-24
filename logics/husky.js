@@ -17,7 +17,7 @@ const huskyLogic = async (filesManager, config, { options }) => {
 	}
 
 	if (options.includes('eslint') || isPrettierEslint) {
-		lintStagedConfig['*.{ts}'] = 'eslint --fix';
+		lintStagedConfig['*.ts'] = 'eslint --fix';
 	}
 
 	filesManager.add('.lintstagedrc.json', lintStagedConfig);
