@@ -69,8 +69,8 @@ class FilesManager {
         return this;
     }
 
-    get(filename) {
-        const content = this.#files.get(filename);
+    get(path) {
+        const content = this.#files.get(path);
         if (typeof content === 'object') {
             return { ...content };
         }
@@ -81,6 +81,15 @@ class FilesManager {
         const content = this.get(oldPath);
         this.#files.set(newPath, content);
         this.delete(oldPath);
+    }
+
+    // todo: work on it
+    replace(path, valuesDict){
+        const content = this.get(path);
+        const regexp = new RegExp(Object.keys(valuesDict).join('|'));
+        const newContent = content.replace(regexp, match => valuesDict[match]);
+        this.add(path, newContent, true);
+        return this;
     }
 
     delete(path){

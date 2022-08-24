@@ -3,14 +3,14 @@ const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
 const path = require('path');
-const { promptsWrapper: prompts, CANCELLED_REQUEST } = require('./utils/prompts');
+const { promptsWrapper: prompts, CANCELLED_REQUEST, optionsToPromptsChoices} = require('./utils/prompts');
 const config = require('./config');
 const loadBaseLogic = require('./logics/base');
 const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles } = require('./utils/template');
-const { optionsToPrompts, toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/src-dir');
+const { toYargsOptionsParam, OptionsCollection } = require('./utils/options');
+const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/flags/src-dir');
 
 const { options } = config;
 
@@ -40,7 +40,6 @@ async function main(argv) {
     const nameFlag = flags['name'];
     const sourceDirFlag = flags['src-dir'];
     const dryFlag = flags['dry'];
-    const testsModeFlag = flags['test-mode'];
     let shouldSetDifferentName = false;
 
     //build questions
@@ -60,7 +59,7 @@ async function main(argv) {
             name: 'name',
             message: 'Project Name',
             initial: (cliDir ?? '').replaceAll('/', '-'),
-            validate: value => {
+            "validate": value => {
                 if(value.length === 0)
                     return 'You must fill this field'
                 else if (!/[a-zA-z0-9_\-@\/]/.test(value))
@@ -71,8 +70,17 @@ async function main(argv) {
         shouldSetDifferentName = true;
     }
 
-    if (!allFlag || (cliOptions.length === 0 && !allFlags)) {
-        questions.push(optionsToPrompts(options));
+    if (!allFlag && cliOptions.length === 0) {
+        const choices = optionsToPromptsChoices(options);
+        questions.push({
+            type: 'multiselect',
+            name: 'options',
+            message: 'Select your features',
+            hint: '- Space to select. Return to submit',
+            instructions: false,
+            min: 1,
+            choices
+        })
     }
 
     if (flags['no-colors']) {
@@ -105,7 +113,7 @@ async function main(argv) {
             selectedOptions.add(nameFlagInstance);
         }
 
-        const logicPayload = { dir, options: selectedOptions.list, name, flags };
+        const logicPayload = { dir, options: selectedOptions, name, flags };
         await loadBaseLogic(filesManager, config, logicPayload);
         await Promise.all(
             selectedOptions.list.map(async option =>
@@ -120,34 +128,6 @@ async function main(argv) {
             sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value);
         }
 
-        if (selectedOptions.includes('tests')) {
-            let testModeValue = testsModeFlag?.value;
-            if (!testsModeFlag) {
-                testModeValue = (
-                    await prompts({
-                        type: 'select',
-                        name: 'testMode',
-                        message: 'Pick tests location',
-                        choices: [
-                            {
-                                title: 'combined',
-                                description: 'tests will remain in src/ folder',
-                                value: 'combined',
-                            },
-                            {
-                                title: 'seperated',
-                                description: 'tests fies will be in __tests__/ directory',
-                                value: 'seperated',
-                            },
-                        ],
-                    })
-                ).testMode;
-            }
-
-            const testModeFlagInstance = allFlags.findByName('test-mode');
-            testModeFlagInstance.logic(filesManager, testModeValue);
-        }
-
         postProcessFiles(filesManager);
 
         if (!dryFlag) {
@@ -159,7 +139,10 @@ async function main(argv) {
         }
 
         //printing the final output
-        const scripts = Object.keys(filesManager.get('package.json').scripts ?? {});
+        const scripts = Object
+            .keys(filesManager.get('package.json').scripts ?? {})
+            .filter(x => !(/^pre/.test(x) || /^post/.test(x)));
+
         const shorthandScripts = ['start', 'test'];
 
         const purple = chalk.hex('#c58af9');
@@ -172,6 +155,7 @@ async function main(argv) {
             '\r\n\r\n',
             'Now run:',
             dir === '.' ? '' : `\r\n\t ${purple`cd`} ${blue(dir)}`,
+            selectedOptions.includes('husky') ? `\r\n\t ${chalk.greenBright`// git init or clone a repo`}` : '',
             `\r\n\t ${purple`npm`} install`,
             '\r\n\r\n',
             'Available Commands:',
@@ -200,7 +184,7 @@ async function main(argv) {
                 console.error(red`Error! could not execute `);
                 break;
             default:
-                throw e;
+                console.error(chalk.red(e.message));
         }
     }
 }
