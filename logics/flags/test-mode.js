@@ -13,7 +13,8 @@ const getTestMode = async (testModeFlag, config) => {
 		const name = testModeFlag.value
 		const mode = testModes.findByName(name)
 		if(!mode){
-			throw new ErrorWithCode(`Invalid test-mode - ${name}`, TEST_MODE_INVALID);
+			const testModeOptions = testModes.list.map(opt => `"${opt.name}"`).join('|')
+			throw new ErrorWithCode(`Invalid test-mode - ${name}, expected ${testModeOptions}`, TEST_MODE_INVALID);
 		}
 		return mode;
 	}
@@ -39,4 +40,4 @@ const seperatedLogic = filesManager => {
 		});
 };
 
-module.exports = { seperatedLogic, getTestMode, SEPERATED_TESTS_DIR };
+module.exports = { seperatedLogic, getTestMode, SEPERATED_TESTS_DIR, TEST_MODE_INVALID };
