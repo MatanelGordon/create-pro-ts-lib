@@ -1,15 +1,20 @@
 # create-pro-ts-lib
 
+<div style="color:rgb(64,192,87);border:rgb(64,192,87) 2px solid;background-color:rgb(64 192 87 / 10%);padding: 15px">New: Added Husky Support!</div>
+
+
+
 [![npm](https://img.shields.io/npm/v/create-pro-ts-lib.svg)](https://www.npmjs.com/package/create-pro-ts-lib)
 [![npm](https://img.shields.io/npm/l/create-pro-ts-lib.svg)](https://github.com/MatanelGordon/create-pro-ts-lib/master/LICENSE)
 
 `create-pro-ts-lib` is a CLI tool to quickly start a Typescript library from a rigid customizable template.
 
--   built-in templates for:
+- built-in templates for:
     <br/>[📂 Nodemon](https://nodemon.io/)
     <br/>[🧪 Tests [Jest]](https://jestjs.io/)
     <br/>[✨ Prettier](https://prettier.io/)
     <br/>[👮🏻‍ Eslint](https://eslint.org/)
+    <br/>[🐶 Husky](https://github.com/typicode/husky)
 
 these templates can be combined to allow maximum flexibility for your library.
 
@@ -35,19 +40,19 @@ my-first-project
 With NPM⚡:
 
 ```bash
-$ npm create pro-ts-lib
+$ npm create pro-ts-lib@latest
 ```
 
 With Yarn⚡:
 
 ```bash
-$ yarn create pro-ts-lib
+$ yarn create pro-ts-lib@latest
 ```
 
 With PNPM⚡:
 
 ```bash
-$ pnpm create pro-ts-lib
+$ pnpm create pro-ts-lib@latest
 ```
 
 Then follow the prompts!
