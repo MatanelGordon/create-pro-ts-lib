@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const path = require('path');
-const { readdir, readFile, writeFile, mkdir, lstat } = require('fs/promises');
+const { readdir, readFile, writeFile, mkdir, lstat, chmod} = require('fs/promises');
 const { existsSync } = require('fs');
 const ErrorWithCode = require('./ErrorWithCode');
 
@@ -167,6 +167,9 @@ const createFiles = async (filesManager, { forceWrite } = DEFAULT_OPTIONS)  => {
                     await mkdir(dirPath, { recursive: true });
                 }
                 await writeFile(filePath, strContent, { signal });
+                if(strContent.includes("#!/usr/bin/env sh")){
+                    await chmod(filePath, 0o755)
+                }
             })
         );
     } catch (e) {
