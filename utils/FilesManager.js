@@ -83,7 +83,6 @@ class FilesManager {
         this.delete(oldPath);
     }
 
-    // todo: work on it
     replace(path, valuesDict){
         const content = this.get(path);
         const regexp = new RegExp(Object.keys(valuesDict).join('|'));
