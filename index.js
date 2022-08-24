@@ -26,6 +26,7 @@ const mainCommand = yargs(hideBin(process.argv))
     });
 
 async function main(argv) {
+    console.log('\n');
     const cliDir = resolveDirectory(argv);
     const argumentExtractor = new ArgumentExtractor(config);
     const allOptions = new OptionsCollection().addAll(options);
