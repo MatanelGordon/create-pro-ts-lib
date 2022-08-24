@@ -184,7 +184,7 @@ async function main(argv) {
                 console.error(red`Error! could not execute `);
                 break;
             default:
-                throw e;
+                console.error(chalk.red(e.message));
         }
     }
 }
