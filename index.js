@@ -40,7 +40,6 @@ async function main(argv) {
     const nameFlag = flags['name'];
     const sourceDirFlag = flags['src-dir'];
     const dryFlag = flags['dry'];
-    const testsModeFlag = flags['test-mode'];
     let shouldSetDifferentName = false;
 
     //build questions

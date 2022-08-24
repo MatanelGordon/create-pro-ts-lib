@@ -9,7 +9,7 @@ const toYargsOptionsParam = options =>
     }, {});
 
 /*
-handles collections for options
+Handles collections for options
  */
 class OptionsCollection {
     #options = [];
