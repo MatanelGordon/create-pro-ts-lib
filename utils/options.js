@@ -8,24 +8,8 @@ const toYargsOptionsParam = options =>
         return Object.assign(acc, { [name]: yargsSettings });
     }, {});
 
-const optionsToPrompts = options => ({
-    type: 'multiselect',
-    name: 'options',
-    message: 'Select your features',
-    hint: '- Space to select. Return to submit',
-    instructions: false,
-    min: 1,
-    choices: options
-        .filter(option => option.visible)
-        .map(option => ({
-            title: option?.color?.(option.name) ?? option.name,
-            selected: option.initialSelected,
-            value: option,
-        })),
-});
-
 /*
-handles collections for options
+Handles collections for options
  */
 class OptionsCollection {
     #options = [];
@@ -177,7 +161,6 @@ class Option {
 }
 
 module.exports = {
-    optionsToPrompts,
     toYargsOptionsParam,
     Option,
     OptionsCollection,
