@@ -1,9 +1,5 @@
 # create-pro-ts-lib
 
-<div style="color:rgb(64,192,87);border:rgb(64,192,87) 2px solid;background-color:rgb(64 192 87 / 10%);padding: 15px">New: Added Husky Support!</div>
-
-
-
 [![npm](https://img.shields.io/npm/v/create-pro-ts-lib.svg)](https://www.npmjs.com/package/create-pro-ts-lib)
 [![npm](https://img.shields.io/npm/l/create-pro-ts-lib.svg)](https://github.com/MatanelGordon/create-pro-ts-lib/master/LICENSE)
 
