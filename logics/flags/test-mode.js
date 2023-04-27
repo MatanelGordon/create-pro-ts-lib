@@ -33,7 +33,7 @@ const getTestMode = async (testModeFlag, config) => {
 
 const seperatedLogic = filesManager => {
 	Object.keys(filesManager.relativeFiles)
-		.filter(path => /\.test\.ts$/.test(path))
+		.filter(path => path.endsWith('.test.ts'))
 		.forEach(testPath => {
 			const testPathWithoutSrc = testPath.split('/').slice(1).join('/');
 			filesManager.change(testPath, path.join(SEPERATED_TESTS_DIR, testPathWithoutSrc));
