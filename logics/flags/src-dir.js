@@ -1,9 +1,17 @@
 const path = require('path');
 const ErrorWithCode = require('../../utils/ErrorWithCode');
+const FilesManager = require('../../utils/FilesManager');
 
 const DEFAULT_SOURCE_DIR = 'src';
 const SRC_DIR_BAD_PARAMS_CODE = 'SRC_DIR_BAD_PARAMS_CODE';
 const SRC_DIR_ILLEGAL = 'SRC_DIR_ILLEGAL'
+
+/**
+ * 
+ * @param {FilesManager} filesManager 
+ * @param {string} srcDir 
+ * @returns 
+ */
 const srcDirLogic = (filesManager, srcDir) => {
     if (srcDir === DEFAULT_SOURCE_DIR) return;
 
@@ -27,6 +35,13 @@ const srcDirLogic = (filesManager, srcDir) => {
             const pathWithoutSrc = filePath.split('/').slice(1).join('/');
             filesManager.change(filePath, path.join(srcDir, pathWithoutSrc));
         });
+
+    // modify tsconfigs
+    
+    filesManager.add('tsconfig.json', {
+        includes: [`${srcDir}/**/*.ts`],
+    })
+
 };
 
 module.exports = { srcDirLogic, DEFAULT_SOURCE_DIR, SRC_DIR_BAD_PARAMS_CODE };

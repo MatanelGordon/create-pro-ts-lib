@@ -9,6 +9,10 @@ const merge = (obj1, obj2) =>
         },
     });
 
+/**
+ * A class for handling file system
+ * @class FileManager
+ */
 class FilesManager {
     #files;
     #path;
