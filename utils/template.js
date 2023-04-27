@@ -194,7 +194,8 @@ const createTemplateFilesDownloader = dirPath => async (filesManager, config) =>
     const files = await readTemplateFiles(fullPath, config);
 
     files.forEach(({ name, content }) => {
-        filesManager.add(name, content);
+        const sanitizedName = name.endsWith('.txt') ? name.substr(0, name.lastIndexOf('.')) : name;
+        filesManager.add(sanitizedName, content);
     });
 };
 
