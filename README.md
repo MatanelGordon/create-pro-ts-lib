@@ -126,7 +126,6 @@ There are other flags that help you customize your boilerplate:
 
 -   `--name` - determine a different name than your directory name
 -   `--all` - ADD ALL FEATURES. 🔥
--   `--src-dir` - determine where `src/` files should be. 📂
 
 -   `--test-mode` - determine test mode. 🧪
     -   seperated - in a separate `__tests__` folder.
@@ -144,12 +143,11 @@ should be used as flags only:
 
 -   `--dry`🏜
 -   `--no-color`🎨
--   `--src-dir`📂
 
 But don't worry, you can use them alongside the UI prompts, for example:
 
 ```bash
-$ npm create pro-ts-lib --no-color --src-dir lib
+$ npm create pro-ts-lib --no-color -p -e
 ```
 
 will result:
