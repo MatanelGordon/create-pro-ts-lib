@@ -6,7 +6,7 @@ const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
 const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/flags/src-dir');
 const nameLogic = require('./logics/flags/name');
-const { seperatedLogic } = require('./logics/flags/test-mode');
+const { seperatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
 
 const chalk = require('chalk');
@@ -64,13 +64,12 @@ module.exports = {
 
 		new Option('combined')
 			.setDescription('tests will remain in src/ folder')
-			.setLogic(() => {}),
+			.setLogic(combinedLogic),
 	],
 	files: {
 		rename: {
 			'_package.json': 'package.json',
 			_gitignore: '.gitignore',
-			'src/index-test-ts.txt': 'src/index.test.ts',
 		},
 	},
 };
