@@ -15,7 +15,6 @@ const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles } = require('./utils/template');
 const { toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/flags/src-dir');
 
 const { options } = config;
 
@@ -180,9 +179,6 @@ async function main(argv) {
                 break;
             case TEMPLATE_ERROR.DIR_NOT_EMPTY_ERROR:
                 console.error(red`ERROR! Directory contains files`)
-                break;
-            case SRC_DIR_BAD_PARAMS_CODE:
-                console.error(red`Error! could not execute `);
                 break;
             default:
                 console.error(chalk.red(e.message));

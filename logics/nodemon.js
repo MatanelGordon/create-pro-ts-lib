@@ -1,14 +1,12 @@
 const path = require('path');
 const { createTemplateFilesDownloader } = require('../utils/template');
-const { DEFAULT_SOURCE_DIR } = require('./flags/src-dir');
 
 const TEMPLATE_PATH = 'templates/nodemon';
 const downloadNodemon = createTemplateFilesDownloader(TEMPLATE_PATH);
 
-const nodemonLogic = async (filesManager, config, { flags }) => {
+const nodemonLogic = async (filesManager, config) => {
     await downloadNodemon(filesManager, config);
-    const srcDir = flags['src-dir']?.value ?? DEFAULT_SOURCE_DIR;
-    const dev = `nodemon ${path.join(srcDir, 'index.ts')}`;
+    const dev = 'nodemon src/index.ts';
     filesManager.add('package.json', { scripts: { dev } });
 };
 
