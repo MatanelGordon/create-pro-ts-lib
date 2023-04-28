@@ -4,7 +4,6 @@ const { prettierLogic } = require('./logics/prettier');
 const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
-const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/flags/src-dir');
 const nameLogic = require('./logics/flags/name');
 const { seperatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
@@ -45,11 +44,6 @@ module.exports = {
 		new Option('all').setDescription(chalk.red`ADDS ALL FEATURES!`).setAlias('a'),
 
 		new Option('name', { type: 'string' }).setDescription('Project name').setLogic(nameLogic),
-
-		new Option('src-dir', { type: 'string' })
-			.setDescription('Source directory name')
-			.setDefaultValue(DEFAULT_SOURCE_DIR)
-			.setLogic(srcDirLogic),
 
 		new Option('dry').setDescription('Run the CLI without creating the files'),
 

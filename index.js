@@ -44,7 +44,6 @@ async function main(argv) {
     const prettierEslint = allOptions.findByName('prettier-eslint');
     const allFlag = flags['all']?.flag;
     const nameFlag = flags['name'];
-    const sourceDirFlag = flags['src-dir'];
     const dryFlag = flags['dry'];
     let shouldSetDifferentName = false;
 
@@ -129,10 +128,6 @@ async function main(argv) {
                 })
             )
         );
-
-        if (sourceDirFlag) {
-            sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value);
-        }
 
         postProcessFiles(filesManager);
 
