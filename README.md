@@ -105,13 +105,6 @@ $ npm create pro-ts-lib my-project -t --test-mode seperated
 
 Note: When adding both prettier and eslint, it triggers a special logic which make them work together.
 
-To create a new Typescript project with prettier `-p` and eslint `-e` and the content inside `src/` directory is in the
-root folder.
-
-```bash
-$ npm create pro-ts-lib my-project -p -e --src-dir .
-```
-
 To install everything, use `--all` flag
 
 ```bash
