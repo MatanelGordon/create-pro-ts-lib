@@ -1,6 +1,6 @@
 {
-    "main": "index.js",
-    "module": "index.esm.js",
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
     "scripts":{
         "build": "webpack"
     },
