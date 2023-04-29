@@ -17,12 +17,11 @@ class FilesManager {
 	#files;
 	#path;
 
-	/** 
-        Manages File Configurations
-        @constructor
-        @param {string} dir - The Directory name
-        @param {object} config -  App configuration
-     */
+	/**
+	 * Manages File Configurations
+	 * @constructor
+	 * @param {string} dir - The Directory name
+	 */
 	constructor(dir) {
 		this.#path = path.isAbsolute(dir) ? dir : path.join(process.cwd(), dir);
 		this.#files = new Map();
@@ -45,12 +44,15 @@ class FilesManager {
 		return this.#path;
 	}
 
-	/** 
-        Receives  relative path and merges it with existing configuration
-        @param {string} path - The relative path in the project (e.g. `pacage.json` for package.json)
-        @param {object} object - json object to merge with existing configuration
-        @returns the current instance to allow chaining
-     */
+
+	/**
+	 * Adds a file in a smart way. 
+	 * It also Allows to merge files if are text files or json files.
+	 * @param {string} fileName 
+	 * @param {any} value 
+	 * @param {boolean} force 
+	 * @returns 
+	 */
 	add(fileName, value, force = false) {
 		const isJson = path.extname(fileName) === '.json';
 		const isIgnoreFile = /^\.\w+ignore$/.test(path.basename(fileName));
