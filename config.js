@@ -1,3 +1,4 @@
+// @ts-check
 const { Option } = require('./utils/options');
 const { nodemonLogic } = require('./logics/nodemon');
 const { prettierLogic } = require('./logics/prettier');
@@ -22,6 +23,7 @@ module.exports = {
 			.setDescription('Adds Prettier')
 			.setAlias('p')
 			.setColor(chalk.yellow)
+			.setInitialSelected(true)
 			.setLogic(prettierLogic),
 
 		new Option('tests')
