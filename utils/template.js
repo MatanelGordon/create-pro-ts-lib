@@ -109,6 +109,7 @@ const sortPackageJsonObj = (packageJson) => {
         'licence',
         'bugs',
         'homepage',
+        'engine',
         'dependencies',
         'devDependencies',
     ].reduce((obj, key) => Object.assign(obj, { [key]: packageJson[key] }), {});
