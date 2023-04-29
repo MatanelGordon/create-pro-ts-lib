@@ -41,6 +41,8 @@ async function main(argv) {
     const prettier = allOptions.findByName('prettier');
     const eslint = allOptions.findByName('eslint');
     const prettierEslint = allOptions.findByName('prettier-eslint');
+    const webpack = allOptions.findByName('webpack');
+    const vite = allOptions.findByName('vite');
     const allFlag = flags['all']?.flag;
     const nameFlag = flags['name'];
     const dryFlag = flags['dry'];
@@ -103,6 +105,10 @@ async function main(argv) {
 
         if (allFlag) {
             selectedOptions.addAll(options);
+        }
+
+        if(selectedOptions.includes(webpack, vite)){
+            console.warn('WARNING: Redundant Webpack and Vite configuration - It is recommended to choose only one build tool')
         }
 
         if (
