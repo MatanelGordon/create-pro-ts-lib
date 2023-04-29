@@ -9,6 +9,8 @@ const { seperatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
 
 const chalk = require('chalk');
+const webpackLogic = require('./logics/webpack');
+const viteLogic = require('./logics/vite');
 
 module.exports = {
 	options: [
@@ -39,6 +41,20 @@ module.exports = {
 			.setDescription('Adds Prettier + Eslint')
 			.setAlias('pe')
 			.setLogic(prettierEslintLogic),
+		
+		new Option('webpack')
+			.setDescription('builds your library with webpack')
+			.setColor('#84c7e8')
+			.setAlias('w')
+			.setInitialSelected(false)
+			.setLogic(webpackLogic),
+		
+		new Option('vite')
+			.setDescription('build your library with vite')
+			.setInitialSelected(true)
+			.setAlias('vi')
+			.setLogic(viteLogic)
+			.setColor('#ffc920')
 	],
 	flags: [
 		new Option('all').setDescription(chalk.red`ADDS ALL FEATURES!`).setAlias('a'),
