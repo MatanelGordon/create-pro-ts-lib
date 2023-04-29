@@ -1,15 +1,17 @@
+// @ts-check
 const { Option } = require('./utils/options');
 const { nodemonLogic } = require('./logics/nodemon');
 const { prettierLogic } = require('./logics/prettier');
 const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
-const { srcDirLogic, DEFAULT_SOURCE_DIR } = require('./logics/flags/src-dir');
 const nameLogic = require('./logics/flags/name');
-const { seperatedLogic } = require('./logics/flags/test-mode');
+const { seperatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
 
 const chalk = require('chalk');
+const webpackLogic = require('./logics/webpack');
+const viteLogic = require('./logics/vite');
 
 module.exports = {
 	options: [
@@ -21,6 +23,7 @@ module.exports = {
 			.setDescription('Adds Prettier')
 			.setAlias('p')
 			.setColor(chalk.yellow)
+			.setInitialSelected(true)
 			.setLogic(prettierLogic),
 
 		new Option('tests')
@@ -40,16 +43,25 @@ module.exports = {
 			.setDescription('Adds Prettier + Eslint')
 			.setAlias('pe')
 			.setLogic(prettierEslintLogic),
+		
+		new Option('webpack')
+			.setDescription('builds your library with webpack')
+			.setColor('#84c7e8')
+			.setAlias('w')
+			.setInitialSelected(false)
+			.setLogic(webpackLogic),
+		
+		new Option('vite')
+			.setDescription('build your library with vite')
+			.setInitialSelected(true)
+			.setAlias('vi')
+			.setLogic(viteLogic)
+			.setColor('#ffc920')
 	],
 	flags: [
 		new Option('all').setDescription(chalk.red`ADDS ALL FEATURES!`).setAlias('a'),
 
 		new Option('name', { type: 'string' }).setDescription('Project name').setLogic(nameLogic),
-
-		new Option('src-dir', { type: 'string' })
-			.setDescription('Source directory name')
-			.setDefaultValue(DEFAULT_SOURCE_DIR)
-			.setLogic(srcDirLogic),
 
 		new Option('dry').setDescription('Run the CLI without creating the files'),
 
@@ -64,13 +76,12 @@ module.exports = {
 
 		new Option('combined')
 			.setDescription('tests will remain in src/ folder')
-			.setLogic(() => {}),
+			.setLogic(combinedLogic),
 	],
 	files: {
 		rename: {
 			'_package.json': 'package.json',
 			_gitignore: '.gitignore',
-			'src/index-test-ts.txt': 'src/index.test.ts',
 		},
 	},
 };

@@ -1,12 +1,11 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "lib": ["es2021"],
-        "types": ["node"],
+        "lib": ["ESNext"],
         "outDir": "dist",
         "baseUrl": ".",
         "module": "commonjs",
-        "target": "es2021",
+        "target": "ESNext",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
@@ -22,9 +21,9 @@
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "importsNotUsedAsValues": "error",
         "declaration": true,
         "removeComments": false
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*.ts"]
 }

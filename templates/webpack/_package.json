@@ -1,0 +1,15 @@
+{
+    "main": "dist/index.js",
+    "module": "dist/index.esm.js",
+    "scripts":{
+        "build": "webpack"
+    },
+    "devDepencencies": {
+        "webpack":"^5",
+        "webpack-cli":"^5"
+    },
+    "engine":{
+        "npm" : ">=8.0.0",
+        "node" : ">=16.0.0"
+    }
+}
