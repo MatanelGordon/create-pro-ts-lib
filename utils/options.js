@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const chalk = require('chalk');
+const FilesManager = require('./FilesManager');
 
 const toYargsOptionsParam = options =>
     options.reduce((acc, option) => {
@@ -85,7 +86,7 @@ class Option {
         this.#yargsSettings.type = type;
         this.#visible = visible;
         this.#color = color;
-        this.#initialSelected = true;
+        this.#initialSelected = false;
     }
 
     get yargsSettings() {
@@ -117,31 +118,48 @@ class Option {
         return this.#color;
     }
 
+    /**
+     * Sets an alias for option via command line
+     * @param {string} alias 
+     */
     setAlias(alias) {
         this.#yargsSettings.alias = alias;
         return this;
     }
 
+    /**
+     * Sets whether it is initially selected or not
+     * @param {boolean} isSelected 
+     */
     setInitialSelected(isSelected) {
         this.#initialSelected = isSelected;
         return this;
     }
 
+    /**
+     * Set a description for the option
+     * @param {string} value brief description content
+     * @returns 
+     */
     setDescription(value) {
         this.#yargsSettings.describe = value;
         return this;
     }
 
-    setDefaultValue(value) {
-        this.#yargsSettings.default = value;
-        return this;
-    }
-
+    /**
+     * Set a specific callback to run when the option is selected
+     * @param {(manager: FilesManager, config: any, options:any) => void} logicFunc 
+     */
     setLogic(logicFunc) {
         this.#logic = logicFunc;
         return this;
     }
 
+    /**
+     * Sets a color for this option
+     * @param {string | import('chalk').Chalk} color 
+     * @returns 
+     */
     setColor(color) {
         let colorValue = color;
 
