@@ -2,7 +2,7 @@
     "restartable": "rs",
     "ext": "json,ts",
     "execMap": {
-        "ts": "ts-node"
+        "ts": "tsx"
     },
     "ignore": [".git", "node_modules/**"]
 }
