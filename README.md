@@ -36,19 +36,19 @@ my-first-project
 With NPM⚡:
 
 ```bash
-$ npm create pro-ts-lib@latest
+npm create pro-ts-lib@latest
 ```
 
 With Yarn⚡:
 
 ```bash
-$ yarn create pro-ts-lib@latest
+yarn create pro-ts-lib@latest
 ```
 
 With PNPM⚡:
 
 ```bash
-$ pnpm create pro-ts-lib@latest
+pnpm create pro-ts-lib@latest
 ```
 
 Then follow the prompts!
@@ -58,7 +58,7 @@ Then follow the prompts!
 This would do the same:
 
 ```bash
-$ npx cptl
+npx cptl
 ```
 
 # It's Not Only for Libraries
@@ -67,40 +67,40 @@ $ npx cptl
     You can use it for <span style="color:#11CCEE">projects</span> as well, but remember:
 </p>
 
--   change `tsconfig.json` accordingly:
+- change `tsconfig.json` accordingly:
 
-    -   `lib` - add if needed
-    -   `module`
-    -   `target`
-    -   `declarations: false`
-    -   etc...
+  - `lib` - add if needed
+  - `module`
+  - `target`
+  - `declarations: false`
+  - etc...
 
--   change `package.json` accordingly
+- change `package.json` accordingly
 
-    -   `licence`
-    -   `files` - remove entirely
-    -   `private: true`
-    -   etc...
+  - `licence`
+  - `files` - remove entirely
+  - `private: true`
+  - etc...
 
--   have fun programming `:)`
+- have fun programming `:)`
 
 ## CLI Examples
 
-Due to pro-ts-lib <b>incredible flexibility</b>, there are many aspects of the boilerplate which you can change via
+Due to pro-ts-lib *incredible flexibility*, there are many aspects of the boilerplate which you can change via
 flags in the CLI.
 
-This next example creates a new Typescript project with <b>nodemon</b> `-n` and <b>prettier</b> `-p` called `my-project`
+This next example creates a new Typescript project with *nodemon* `-n` and *prettier* `-p` called `my-project`
 .
 
 ```bash
-$ npm create pro-ts-lib my-project -n -p
+npm create pro-ts-lib my-project -n -p
 ```
 
 To create a new Typescript project with tests `-t` , and it puts the test in a seperated folder `__tests__` due
 to `--test-mode seperated`
 
 ```bash
-$ npm create pro-ts-lib my-project -t --test-mode seperated
+npm create pro-ts-lib my-project -t --test-mode seperated
 ```
 
 Note: When adding both prettier and eslint, it triggers a special logic which make them work together.
@@ -108,46 +108,46 @@ Note: When adding both prettier and eslint, it triggers a special logic which ma
 To install everything, use `--all` flag
 
 ```bash
-$ npm create pro-ts-lib my-project --all
+npm create pro-ts-lib my-project --all
 ```
 
 # Options
 
 Each feature has its own flag:
 
--   Tests `--tests` / `-t`
--   Nodemon `--nodemon` / `-n`
--   Prrettier `--prettier` / `-p`
--   etc...⚡
+- Tests `--tests` / `-t`
+- Nodemon `--nodemon` / `-n`
+- Prrettier `--prettier` / `-p`
+- etc...⚡
 
 # Advanced Options ⚠️
 
 There are other flags that help you customize your boilerplate:
 
--   `--name` - determine a different name than your directory name
--   `--all` - ADD ALL FEATURES. 🔥
+- `--name` - determine a different name than your directory name
+- `--all` - ADD ALL FEATURES. 🔥
 
--   `--test-mode` - determine test mode. 🧪
-    -   seperated - in a separate `__tests__` folder.
-    -   combined - in `src/` folder next to `index.ts` .
+- `--test-mode` - determine test mode. 🧪
+  - seperated - in a separate `__tests__` folder.
+  - combined - in `src/` folder next to `index.ts` .
 
 There are also options to handle the CLI:
 
--   `--dry`🏜 - run the CLI with no consequences.
--   `--no-color`🎨 - run CLI output without color.
+- `--dry`🏜 - run the CLI with no consequences.
+- `--no-color`🎨 - run CLI output without color.
 
 ## Note
 
 Since they are quite unique and advanced, The following features **ARE NOT** supported by the terminal UI prompt and
 should be used as flags only:
 
--   `--dry`🏜
--   `--no-color`🎨
+- `--dry`🏜
+- `--no-color`🎨
 
 But don't worry, you can use them alongside the UI prompts, for example:
 
 ```bash
-$ npm create pro-ts-lib --no-color -p -e
+npm create pro-ts-lib --no-color -p -e
 ```
 
 will result:
