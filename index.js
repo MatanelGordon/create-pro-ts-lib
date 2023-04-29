@@ -1,9 +1,5 @@
 #!/usr/bin/env node
-// todo: change readme to npm create pro-ts-lib@latest [ ]
-// todo: update readme about husky [ ]
-// todo: change initial selected options [ ]
-// todo: add --not-X flags and create them automatically [ ]
-// todo[extreme]: add to monorepo and start developing chuchaJS (webpack5 only and support module federation) [ ]
+
 const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
