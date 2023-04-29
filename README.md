@@ -125,10 +125,10 @@ Each feature has its own flag:
 - Vite `--vite` / `--vi`
 - Webpack5 `--webpack` / `-w`
 
-
 ## Advanced Options ⚠️
 
 ### Other Flags
+
 There are other flags that help you customize your boilerplate:
 
 - `--name` - determine a different name than your directory name
