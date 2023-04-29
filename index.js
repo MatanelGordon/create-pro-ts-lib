@@ -1,9 +1,5 @@
 #!/usr/bin/env node
-// todo: change readme to npm create pro-ts-lib@latest [ ]
-// todo: update readme about husky [ ]
-// todo: change initial selected options [ ]
-// todo: add --not-X flags and create them automatically [ ]
-// todo[extreme]: add to monorepo and start developing chuchaJS (webpack5 only and support module federation) [ ]
+
 const yargs = require('yargs');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
@@ -15,7 +11,6 @@ const FileManager = require('./utils/FilesManager');
 const { resolveDirectory, ArgumentExtractor } = require('./utils/arguments');
 const { postProcessFiles, ERRORS: TEMPLATE_ERROR, createFiles } = require('./utils/template');
 const { toYargsOptionsParam, OptionsCollection } = require('./utils/options');
-const { SRC_DIR_BAD_PARAMS_CODE } = require('./logics/flags/src-dir');
 
 const { options } = config;
 
@@ -42,9 +37,10 @@ async function main(argv) {
     const prettier = allOptions.findByName('prettier');
     const eslint = allOptions.findByName('eslint');
     const prettierEslint = allOptions.findByName('prettier-eslint');
+    const webpack = allOptions.findByName('webpack');
+    const vite = allOptions.findByName('vite');
     const allFlag = flags['all']?.flag;
     const nameFlag = flags['name'];
-    const sourceDirFlag = flags['src-dir'];
     const dryFlag = flags['dry'];
     let shouldSetDifferentName = false;
 
@@ -107,6 +103,10 @@ async function main(argv) {
             selectedOptions.addAll(options);
         }
 
+        if(selectedOptions.includes(webpack, vite)){
+            console.warn('WARNING: Redundant Webpack and Vite configuration - It is recommended to choose only one build tool')
+        }
+
         if (
             selectedOptions.includes(prettier, eslint) ||
             selectedOptions.includes(prettierEslint)
@@ -129,10 +129,6 @@ async function main(argv) {
                 })
             )
         );
-
-        if (sourceDirFlag) {
-            sourceDirFlag.flag.logic(filesManager, sourceDirFlag.value);
-        }
 
         postProcessFiles(filesManager);
 
@@ -185,9 +181,6 @@ async function main(argv) {
                 break;
             case TEMPLATE_ERROR.DIR_NOT_EMPTY_ERROR:
                 console.error(red`ERROR! Directory contains files`)
-                break;
-            case SRC_DIR_BAD_PARAMS_CODE:
-                console.error(red`Error! could not execute `);
                 break;
             default:
                 console.error(chalk.red(e.message));

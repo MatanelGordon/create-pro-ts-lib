@@ -1,0 +1,15 @@
+{
+    "main":"dist/index.js",
+    "module": "dist/index.mjs",
+    "scripts":{
+        "build":"vite build"
+    },
+    "devDependencies": {
+        "vite":"^4",
+        "vite-plugin-dts": "^2"
+    },
+    "engine":{
+        "npm" : ">=8.0.0",
+        "node" : ">=16.0.0"
+    }
+}

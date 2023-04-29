@@ -2,6 +2,7 @@ const path = require('path');
 const { promptsWrapper, optionsToPromptsChoices } = require('../../utils/prompts');
 const {OptionsCollection} = require("../../utils/options");
 const ErrorWithCode = require("../../utils/ErrorWithCode");
+const FilesManager = require('../../utils/FilesManager');
 
 const SEPERATED_TESTS_DIR = '__tests__';
 const TEST_MODE_INVALID = 'TEST_MODE_INVALID';
@@ -31,13 +32,35 @@ const getTestMode = async (testModeFlag, config) => {
 	return testMode;
 };
 
+/**
+ * 
+ * @param {FilesManager} filesManager 
+ */
 const seperatedLogic = filesManager => {
 	Object.keys(filesManager.relativeFiles)
-		.filter(path => /\.test\.ts$/.test(path))
+		.filter(path => path.endsWith('.test.ts'))
 		.forEach(testPath => {
 			const testPathWithoutSrc = testPath.split('/').slice(1).join('/');
 			filesManager.change(testPath, path.join(SEPERATED_TESTS_DIR, testPathWithoutSrc));
 		});
+	
+	filesManager.add('tsconfig.test.json', {
+		include: [`${SEPERATED_TESTS_DIR}/**/*.test.ts`]
+	})
 };
 
-module.exports = { seperatedLogic, getTestMode, SEPERATED_TESTS_DIR, TEST_MODE_INVALID };
+/**
+ * 
+ * @param {FilesManager} filesManager 
+ */
+const combinedLogic = (filesManager) => {
+	filesManager.add('tsconfig.test.json', {
+		include: [`src/**/*.test.ts`]
+	})
+
+	filesManager.add('tsconfig.json', {
+		exclude: [`src/**/*.test.ts`]
+	})
+}
+
+module.exports = { combinedLogic,seperatedLogic, getTestMode, SEPERATED_TESTS_DIR, TEST_MODE_INVALID };
