@@ -6,7 +6,7 @@ const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
 const nameLogic = require('./logics/flags/name');
-const { seperatedLogic, combinedLogic } = require('./logics/flags/test-mode');
+const { separatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
 
 const chalk = require('chalk');
@@ -70,7 +70,7 @@ module.exports = {
 		new Option('test-mode', { type: 'string' }).setDescription('Sets test mode [separated / combined]'),
 	],
 	testMode: [
-		new Option('separated').setDescription('tests fies will be in __tests__/ directory').setLogic(seperatedLogic),
+		new Option('separated').setDescription('tests fies will be in __tests__/ directory').setLogic(separatedLogic),
 
 		new Option('combined').setDescription('tests will remain in src/ folder').setLogic(combinedLogic),
 	],
