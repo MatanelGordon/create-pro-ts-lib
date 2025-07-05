@@ -4,7 +4,7 @@
     "description": "A command-line-interface for building Typescript libraries",
     "main": "index.js",
     "scripts": {
-        "run": "node ./index.js my-proj",
+        "start": "node ./index.js tmp",
         "format": "prettier --ignore-path .gitignore -w ."
     },
     "bin": {

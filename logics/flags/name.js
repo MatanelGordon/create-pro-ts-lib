@@ -1,4 +1,4 @@
-const nameLogic = async (fileManager, config, { name }) => {
+const nameLogic = async (fileManager, _config, { name }) => {
     fileManager.add('package.json', { name });
 };
 

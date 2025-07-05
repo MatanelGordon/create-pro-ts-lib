@@ -109,3 +109,4 @@ dist
 
 # Macbooks
 .DS_Store
+tmp/

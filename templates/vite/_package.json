@@ -5,7 +5,7 @@
         "build":"vite build"
     },
     "devDependencies": {
-        "vite":"^4",
+        "vite": "latest",
         "vite-plugin-dts": "^2"
     },
     "engine":{

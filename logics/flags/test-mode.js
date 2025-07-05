@@ -36,7 +36,7 @@ const getTestMode = async (testModeFlag, config) => {
  * 
  * @param {FilesManager} filesManager 
  */
-const seperatedLogic = filesManager => {
+const separatedLogic = filesManager => {
 	Object.keys(filesManager.relativeFiles)
 		.filter(path => path.endsWith('.test.ts'))
 		.forEach(testPath => {
@@ -63,4 +63,4 @@ const combinedLogic = (filesManager) => {
 	})
 }
 
-module.exports = { combinedLogic,seperatedLogic, getTestMode, SEPERATED_TESTS_DIR, TEST_MODE_INVALID };
+module.exports = { combinedLogic, separatedLogic, getTestMode, SEPERATED_TESTS_DIR, TEST_MODE_INVALID };

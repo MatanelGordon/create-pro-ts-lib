@@ -1,7 +1,7 @@
 {
     "devDependencies": {
-        "@vitest/ui": "^0",
-        "vitest": "^0"
+        "@vitest/ui": "latest",
+        "vitest": "latest"
     },
     "scripts": {
         "test": "vitest run",
