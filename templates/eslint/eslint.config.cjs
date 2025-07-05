@@ -1,13 +1,14 @@
-import plugin from '@typescript-prettier-eslint';
+import plugin from '@typescript-eslint/eslint-plugin';
+import parser from '@typescript-eslint/parser';
 
 export default [
 	{
-		files: ['**/*.ts', '**/*.tsx'],
+		files: ['**/*.ts'],
 		languageOptions: {
-			parser: plugin.parser,
+			parser,
 		},
 		plugins: {
-			'@typescript-prettier-eslint': plugin,
+			'@typescript-eslint': plugin,
 		},
 		rules: {
 			...plugin.configs.recommended.rules,

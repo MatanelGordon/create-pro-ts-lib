@@ -1,7 +1,6 @@
 {
 	"devDependencies": {
-		"tsx": "^3",
-		"nodemon": "^2"
+		"tsx": "latest"
 	},
 	"scripts": {
 		"dev": "tsx --watch src/index.ts",

@@ -184,12 +184,12 @@ async function main(argv) {
 			scripts
 				.map(
 					script =>
-						`${purple`npm`} ${
+						`\r\n\t${purple`npm`} ${
 							shorthandScripts.includes(script) ? '' : 'run '
 						}${script}`
 				)
-				.sort()
-				.join(', '),
+				.sort((a,b) => (a.split('run').at(1) ?? a).localeCompare(b.split('run').at(1) ?? b))
+				.join(''),
 			'\r\n'
 		);
 	} catch (e) {

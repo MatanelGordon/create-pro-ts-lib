@@ -1,6 +1,8 @@
-const path = require('path');
-const pkg = require('./package.json');
-const tsconfig = require('./tsconfig.json');
+import path from 'path';
+import fs from 'fs';
+
+const pkg = fs.readFileSync('./package.json');
+const tsconfig = fs.readFileSync('./tsconfig.json');
 
 const alias = Object.fromEntries(
 	Object.entries(tsconfig?.compilerOptions?.paths ?? {}).map(
@@ -87,7 +89,7 @@ const esmConfig = {
 	},
 };
 
-module.exports = (() => {
+const final = (() => {
 	if (COMMON_ONLY && ESM_ONLY) {
 		throw new Error('Cannot set both COMMON_ONLY and ESM_ONLY');
 	} else if (COMMON_ONLY) {
@@ -98,3 +100,5 @@ module.exports = (() => {
 
 	return [commonJsConfig, esmConfig];
 })();
+
+export default final;

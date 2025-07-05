@@ -5,7 +5,7 @@ const _ = require('lodash');
 const merge = (obj1, obj2) =>
 	deepmerge(obj1, obj2, {
 		arrayMerge(target, source) {
-			return _.chain(source).concat(target).uniq().value();
+			return _(source).concat(target).uniq().value();
 		},
 	});
 

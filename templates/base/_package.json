@@ -1,9 +1,9 @@
 {
-	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$schema": "https://json.schemastore.org/package.json",
 	"private": false,
-	"version": "1.0.0",
+	"version": "0.0.0",
+	"type": "module",
 	"licence": "MIT",
-	"main": "dist/index.js",
 	"files": ["dist/**/*"],
 	"scripts": {
 		"build": "tsc -p ./tsconfig.json"

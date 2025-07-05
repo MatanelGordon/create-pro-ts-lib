@@ -38,7 +38,7 @@ module.exports = {
 			.setDescription('Adds tests [jest]')
 			.setAlias('t')
 			.setColor(chalk.green)
-			.setInitialSelected(false)
+			.setInitialSelected(true)
 			.setLogic(testsLogic),
 
 		new Option('husky')
