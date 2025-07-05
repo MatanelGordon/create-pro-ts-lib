@@ -1,9 +1,9 @@
 {
-  "scripts": {
-    "prepare": "husky install"
-  },
-  "devDependencies": {
-    "husky": "^9",
-    "lint-staged": "^16"
-  }
+	"scripts": {
+		"prepare": "husky install"
+	},
+	"devDependencies": {
+		"husky": "^9",
+		"lint-staged": "^16"
+	}
 }

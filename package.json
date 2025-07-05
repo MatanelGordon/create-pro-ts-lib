@@ -1,55 +1,56 @@
 {
-    "name": "create-pro-ts-lib",
-    "version": "2.0.0",
-    "description": "A command-line-interface for building Typescript libraries",
-    "main": "index.js",
-    "scripts": {
-        "start": "node ./index.js tmp",
-        "format": "prettier --ignore-path .gitignore -w ."
-    },
-    "bin": {
-        "create-pro-ts-lib": "./index.js",
-        "cptl": "./index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/MatanelGordon/create-pro-ts-lib.git"
-    },
-    "keywords": [
-        "ts-lib",
-        "pro-ts-lib",
-        "create-ts-lib",
-        "create-pro-ts-lib",
-        "typescript",
-        "ts-boilerplate",
-        "ts-templates",
-        "ts-lib-cli",
-        "cli"
-    ],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/MatanelGordon/create-pro-ts-lib/issues"
-    },
-    "homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
-    "files": [
-        "templates/",
-        "logics/",
-        "utils/",
-        "./config.js"
-    ],
-    "dependencies": {
-        "chalk": "4",
-        "deepmerge": "^4.2.2",
-        "prompts": "^2.4.2",
-        "yargs": "^17.5.1",
-        "lodash": "^4.17.21"
-    },
-    "devDependencies": {
-        "@types/lodash": "^4.14.182",
-        "@types/node": "16",
-        "@types/prompts": "^2.0.14",
-        "@types/yargs": "^17.0.10",
-        "prettier": "^2.7.1"
-    }
+	"name": "create-pro-ts-lib",
+	"version": "2.0.0",
+	"description": "A command-line-interface for building Typescript libraries",
+	"main": "index.js",
+	"scripts": {
+		"start": "rimraf tmp && node ./index.js tmp",
+		"format": "prettier --ignore-path .gitignore -w ."
+	},
+	"bin": {
+		"create-pro-ts-lib": "./index.js",
+		"cptl": "./index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MatanelGordon/create-pro-ts-lib.git"
+	},
+	"keywords": [
+		"ts-lib",
+		"pro-ts-lib",
+		"create-ts-lib",
+		"create-pro-ts-lib",
+		"typescript",
+		"ts-boilerplate",
+		"ts-templates",
+		"ts-lib-cli",
+		"cli"
+	],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/MatanelGordon/create-pro-ts-lib/issues"
+	},
+	"homepage": "https://github.com/MatanelGordon/create-pro-ts-lib#readme",
+	"files": [
+		"templates/",
+		"logics/",
+		"utils/",
+		"./config.js"
+	],
+	"dependencies": {
+		"chalk": "4",
+		"deepmerge": "^4.2.2",
+		"lodash": "^4.17.21",
+		"prompts": "^2.4.2",
+		"yargs": "^17.5.1"
+	},
+	"devDependencies": {
+		"@types/lodash": "^4.14.182",
+		"@types/node": "16",
+		"@types/prompts": "^2.0.14",
+		"@types/yargs": "^17.0.10",
+		"prettier": "^2.7.1",
+		"rimraf": "^6.0.1"
+	}
 }

@@ -3,7 +3,9 @@ const pkg = require('./package.json');
 const tsconfig = require('./tsconfig.json');
 
 const alias = Object.fromEntries(
-	Object.entries(tsconfig?.compilerOptions?.paths ?? {}).map(([name, [pattern]]) => [name, path.resolve(pattern)])
+	Object.entries(tsconfig?.compilerOptions?.paths ?? {}).map(
+		([name, [pattern]]) => [name, path.resolve(pattern)]
+	)
 );
 
 /**
@@ -86,13 +88,11 @@ const esmConfig = {
 };
 
 module.exports = (() => {
-	if(COMMON_ONLY && ESM_ONLY){
+	if (COMMON_ONLY && ESM_ONLY) {
 		throw new Error('Cannot set both COMMON_ONLY and ESM_ONLY');
-	}
-	else if(COMMON_ONLY){
+	} else if (COMMON_ONLY) {
 		return commonJsConfig;
-	}
-	else if(ESM_ONLY){
+	} else if (ESM_ONLY) {
 		return esmConfig;
 	}
 

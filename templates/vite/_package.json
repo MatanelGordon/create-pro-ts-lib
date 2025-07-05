@@ -1,15 +1,15 @@
 {
-    "main":"dist/index.js",
-    "module": "dist/index.mjs",
-    "scripts":{
-        "build":"vite build"
-    },
-    "devDependencies": {
-        "vite": "latest",
-        "vite-plugin-dts": "^2"
-    },
-    "engine":{
-        "npm" : ">=8.0.0",
-        "node" : ">=16.0.0"
-    }
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"scripts": {
+		"build": "vite build"
+	},
+	"devDependencies": {
+		"vite": "latest",
+		"vite-plugin-dts": "^2"
+	},
+	"engine": {
+		"npm": ">=10.0.0",
+		"node": ">=20.0.0"
+	}
 }

@@ -5,7 +5,7 @@
 
 `create-pro-ts-lib` is a CLI tool to quickly start a Typescript library from a rigid customizable template.
 
-- built-in templates for:
+-   built-in templates for:
     <br/>[🕵🏻‍♀️ Nodemon](https://nodemon.io/)
     <br/>[🧪 Tests [Vitest]](https://vitest.dev/)
     <br/>[✨ Prettier](https://prettier.io/)
@@ -69,23 +69,23 @@ npx cptl
     You can use it for <span style="color:#11CCEE">projects</span> as well, but remember:
 </p>
 
-- change `tsconfig.json` accordingly:
+-   change `tsconfig.json` accordingly:
 
-  - `lib` - add if needed
-  - `module`
-  - `target`
-  - `declarations: false`
-  - etc...
+    -   `lib` - add if needed
+    -   `module`
+    -   `target`
+    -   `declarations: false`
+    -   etc...
 
-- change `package.json` accordingly
+-   change `package.json` accordingly
 
-  - `licence`
-  - `files` - remove
-  - `private: true`
-  - `module` - remove
-  - etc...
+    -   `licence`
+    -   `files` - remove
+    -   `private: true`
+    -   `module` - remove
+    -   etc...
 
-- have fun programming `:)`
+-   have fun programming `:)`
 
 ### CLI Examples
 
@@ -118,12 +118,12 @@ npm create pro-ts-lib my-project --all
 
 Each feature has its own flag:
 
-- Tests `--tests` / `-t`
-- Nodemon `--nodemon` / `-n`
-- Prettier `--prettier` / `-p`
-- Eslint `--eslint` / `-e`
-- Vite `--vite` / `--vi`
-- Webpack5 `--webpack` / `-w`
+-   Tests `--tests` / `-t`
+-   Nodemon `--nodemon` / `-n`
+-   Prettier `--prettier` / `-p`
+-   Eslint `--eslint` / `-e`
+-   Vite `--vite` / `--vi`
+-   Webpack5 `--webpack` / `-w`
 
 ## Advanced Options ⚠️
 
@@ -131,17 +131,17 @@ Each feature has its own flag:
 
 There are other flags that help you customize your boilerplate:
 
-- `--name` - determine a different name than your directory name
-- `--all` - ADD ALL FEATURES. 🔥
+-   `--name` - determine a different name than your directory name
+-   `--all` - ADD ALL FEATURES. 🔥
 
-- `--test-mode` - determine test mode. 🧪
-  - seperated - in a separate `__tests__` folder.
-  - combined - in `src/` folder next to `index.ts` .
+-   `--test-mode` - determine test mode. 🧪
+    -   seperated - in a separate `__tests__` folder.
+    -   combined - in `src/` folder next to `index.ts` .
 
 There are also options to handle the CLI:
 
-- `--dry`🏜 - run the CLI with no consequences.
-- `--no-color`🎨 - run CLI output without color.
+-   `--dry`🏜 - run the CLI with no consequences.
+-   `--no-color`🎨 - run CLI output without color.
 
 ### Vite / Webpack partial build
 
@@ -152,9 +152,10 @@ To output only commonjs files, use `COMMON_ONLY` variable before executing the b
 example when using vite:
 
 package.json:
+
 ```json
 {
-    "scripts": "COMMON_ONLY=true vite build" 
+	"scripts": "COMMON_ONLY=true vite build"
 }
 ```
 
@@ -163,23 +164,24 @@ However, if you want to output only esm files, use `ESM_ONLY` variable before ex
 example when using webpack:
 
 package.json:
+
 ```json
 {
-    "scripts": "ESM_ONLY=true webpack"
+	"scripts": "ESM_ONLY=true webpack"
 }
 ```
 
 > NOTE: Both `COMMON_ONLY` and `ESM_ONLY` will work for both `vite` and `webpack`.
 
-> NOTE: You cannot use both variables at the same time. This will throw an error saying youre an idiot because you didnt read it <b style="font-size: 1.1rem">bundles to both commonjs and esm by default.</b> 
+> NOTE: You cannot use both variables at the same time. This will throw an error saying youre an idiot because you didnt read it <b style="font-size: 1.1rem">bundles to both commonjs and esm by default.</b>
 
 ## Note
 
 Since they are quite unique and advanced, The following features **ARE NOT** supported by the terminal UI prompt and
 should be used as flags only:
 
-- `--dry`🏜
-- `--no-color`🎨
+-   `--dry`🏜
+-   `--no-color`🎨
 
 But don't worry, you can use them alongside the UI prompts, for example:
 

@@ -15,9 +15,17 @@ const viteLogic = require('./logics/vite');
 
 module.exports = {
 	options: [
-		new Option('tsx').setDescription('Adds Tsx').setAlias('n').setColor(chalk.red).setLogic(tsxLogic),
+		new Option('tsx')
+			.setDescription('Adds Tsx')
+			.setAlias('n')
+			.setColor(chalk.red)
+			.setLogic(tsxLogic),
 
-		new Option('eslint').setDescription('Adds ESlint').setAlias('e').setColor('#ff6500').setLogic(eslintLogic),
+		new Option('eslint')
+			.setDescription('Adds ESlint')
+			.setAlias('e')
+			.setColor('#ff6500')
+			.setLogic(eslintLogic),
 
 		new Option('prettier')
 			.setDescription('Adds Prettier')
@@ -59,20 +67,32 @@ module.exports = {
 			.setColor('#ffc920'),
 	].sort((a, b) => a.name.localeCompare(b.name)),
 	flags: [
-		new Option('all').setDescription(chalk.red`ADDS ALL FEATURES!`).setAlias('a'),
+		new Option('all')
+			.setDescription(chalk.red`ADDS ALL FEATURES!`)
+			.setAlias('a'),
 
-		new Option('name', { type: 'string' }).setDescription('Project name').setLogic(nameLogic),
+		new Option('name', { type: 'string' })
+			.setDescription('Project name')
+			.setLogic(nameLogic),
 
-		new Option('dry').setDescription('Run the CLI without creating the files'),
+		new Option('dry').setDescription(
+			'Run the CLI without creating the files'
+		),
 
 		new Option('no-colors').setDescription('Disable output colors'),
 
-		new Option('test-mode', { type: 'string' }).setDescription('Sets test mode [separated / combined]'),
+		new Option('test-mode', { type: 'string' }).setDescription(
+			'Sets test mode [separated / combined]'
+		),
 	],
 	testMode: [
-		new Option('separated').setDescription('tests fies will be in __tests__/ directory').setLogic(separatedLogic),
+		new Option('combined')
+			.setDescription('tests will remain in src/ folder')
+			.setLogic(combinedLogic),
 
-		new Option('combined').setDescription('tests will remain in src/ folder').setLogic(combinedLogic),
+		new Option('separated')
+			.setDescription('tests fies will be in __tests__/ directory')
+			.setLogic(separatedLogic),
 	],
 	files: {
 		rename: {

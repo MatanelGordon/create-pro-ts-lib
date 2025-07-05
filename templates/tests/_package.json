@@ -1,11 +1,11 @@
 {
-    "devDependencies": {
-        "@vitest/ui": "latest",
-        "vitest": "latest"
-    },
-    "scripts": {
-        "test": "vitest run",
-        "test:ui": "vitest --ui",
-        "test:watch": "vitest"
-    }
+	"devDependencies": {
+		"@vitest/ui": "latest",
+		"vitest": "latest"
+	},
+	"scripts": {
+		"test": "vitest run",
+		"test:ui": "vitest --ui",
+		"test:watch": "vitest"
+	}
 }

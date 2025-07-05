@@ -1,10 +1,10 @@
 {
-    "devDependencies": {
-        "eslint": "^8.19.0",
-        "@typescript-eslint/eslint-plugin": "^5.27.0",
-        "@typescript-eslint/parser": "^5.27.0"
-    },
-    "scripts": {
-        "lint": "eslint --ignore-path .gitignore ./**/*.ts"
-    }
+	"devDependencies": {
+		"eslint": "^8.19.0",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0"
+	},
+	"scripts": {
+		"lint": "eslint --ignore-path .gitignore ./**/*.ts"
+	}
 }

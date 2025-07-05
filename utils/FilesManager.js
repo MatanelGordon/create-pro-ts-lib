@@ -29,7 +29,10 @@ class FilesManager {
 
 	get files() {
 		return Object.fromEntries(
-			Array.from(this.#files.entries()).map(([key, value]) => [path.join(this.#path, key), value])
+			Array.from(this.#files.entries()).map(([key, value]) => [
+				path.join(this.#path, key),
+				value,
+			])
 		);
 	}
 
@@ -44,14 +47,13 @@ class FilesManager {
 		return this.#path;
 	}
 
-
 	/**
-	 * Adds a file in a smart way. 
+	 * Adds a file in a smart way.
 	 * It also Allows to merge files if are text files or json files.
-	 * @param {string} fileName 
-	 * @param {any} value 
-	 * @param {boolean} force 
-	 * @returns 
+	 * @param {string} fileName
+	 * @param {any} value
+	 * @param {boolean} force
+	 * @returns
 	 */
 	add(fileName, value, force = false) {
 		const isJson = path.extname(fileName) === '.json';
@@ -62,12 +64,21 @@ class FilesManager {
 		if (!force && isJson) {
 			const currentObject = currentValue ?? {};
 
-			if (!(typeof currentObject === 'object' && typeof value === 'object')) {
-				throw new Error('Could Not merge if current value or new Value are not typeof object');
+			if (
+				!(
+					typeof currentObject === 'object' &&
+					typeof value === 'object'
+				)
+			) {
+				throw new Error(
+					'Could Not merge if current value or new Value are not typeof object'
+				);
 			}
 			setterValue = merge(currentObject, value);
 		} else if (!force && currentValue && isIgnoreFile) {
-			setterValue = [currentValue, value].map(content => content.trim()).join('\n');
+			setterValue = [currentValue, value]
+				.map(content => content.trim())
+				.join('\n');
 		}
 		this.#files.set(fileName, setterValue);
 		return this;
@@ -122,8 +133,10 @@ class FilesManager {
 	 * @param {JsonModifier} modifier
 	 */
 	modifyJson(path, modifier) {
-		if (!this.has(path)) throw new Error('File Does Not Exist in FilesManager');
-		if (!path.endsWith('.json')) throw new Error('Could not modify non .json paths');
+		if (!this.has(path))
+			throw new Error('File Does Not Exist in FilesManager');
+		if (!path.endsWith('.json'))
+			throw new Error('Could not modify non .json paths');
 		const curr = this.get(path);
 		modifier(curr);
 		this.add(path, curr, true);
@@ -138,10 +151,10 @@ class FilesManager {
 		return this.#files.has(path);
 	}
 
-    /**
-     * 
-     * @param {string} path 
-     */
+	/**
+	 *
+	 * @param {string} path
+	 */
 	delete(path) {
 		this.#files.delete(path);
 	}
