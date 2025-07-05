@@ -4,7 +4,7 @@
 	"description": "A command-line-interface for building Typescript libraries",
 	"main": "index.js",
 	"scripts": {
-		"start": "rimraf tmp && node ./index.js tmp",
+		"start": "rimraf tmp && node ./index.js tmp && code tmp",
 		"format": "prettier --ignore-path .gitignore -w ."
 	},
 	"bin": {

@@ -17,7 +17,7 @@ module.exports = {
 	options: [
 		new Option('tsx')
 			.setDescription('Adds Tsx')
-			.setAlias('n')
+			.setAlias('t')
 			.setColor(chalk.red)
 			.setLogic(tsxLogic),
 

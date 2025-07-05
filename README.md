@@ -119,7 +119,7 @@ npm create pro-ts-lib my-project --all
 Each feature has its own flag:
 
 -   Tests `--tests` / `-t`
--   Nodemon `--nodemon` / `-n`
+-   Tsx `--tsx` / `-n`
 -   Prettier `--prettier` / `-p`
 -   Eslint `--eslint` / `-e`
 -   Vite `--vite` / `--vi`
