@@ -5,7 +5,6 @@ const { prettierLogic } = require('./logics/prettier');
 const { eslintLogic } = require('./logics/eslint');
 const { testsLogic } = require('./logics/tests');
 const { prettierEslintLogic } = require('./logics/prettier-eslint');
-const nameLogic = require('./logics/flags/name');
 const { separatedLogic, combinedLogic } = require('./logics/flags/test-mode');
 const { huskyLogic } = require('./logics/husky');
 
@@ -72,8 +71,7 @@ module.exports = {
 			.setAlias('a'),
 
 		new Option('name', { type: 'string' })
-			.setDescription('Project name')
-			.setLogic(nameLogic),
+			.setDescription('Project name'),
 
 		new Option('dry').setDescription(
 			'Run the CLI without creating the files'
