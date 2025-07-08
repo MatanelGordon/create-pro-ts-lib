@@ -6,7 +6,7 @@
 `create-pro-ts-lib` is a CLI tool to quickly start a Typescript library from a rigid customizable template.
 
 -   built-in templates for:
-    <br/>[🕵🏻‍♀️ Nodemon](https://nodemon.io/)
+    <br/>[🕵🏻‍♀️ Tsx](https://tsx.is/)
     <br/>[🧪 Tests [Vitest]](https://vitest.dev/)
     <br/>[✨ Prettier](https://prettier.io/)
     <br/>[👮🏻‍ Eslint](https://eslint.org/)

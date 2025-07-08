@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const yargs = require('yargs');
+const { exit, env } = require('process');
 const { hideBin } = require('yargs/helpers');
 const chalk = require('chalk');
 const path = require('path');
@@ -34,19 +35,20 @@ const mainCommand = yargs(hideBin(process.argv))
 	});
 
 async function main(argv) {
-	console.log('\n');
 	const cliDir = resolveDirectory(argv);
 	const argumentExtractor = new ArgumentExtractor(config);
 	const allOptions = new OptionsCollection().addAll(options);
+	const allBuildOptions = new OptionsCollection().addAll(config.buildOptions)
 	const allFlags = new OptionsCollection().addAll(config.flags);
 	const flags = argumentExtractor.getFlags(argv);
 	const cliOptions = argumentExtractor.getOptions(argv);
+	const cliBuildOptions = argumentExtractor.getBuildOptions(argv);
 
 	const prettier = allOptions.findByName('prettier');
 	const eslint = allOptions.findByName('eslint');
 	const prettierEslint = allOptions.findByName('prettier-eslint');
-	const webpack = allOptions.findByName('webpack');
-	const vite = allOptions.findByName('vite');
+	const webpack = allBuildOptions.findByName('webpack');
+	const vite = allBuildOptions.findByName('vite');
 	const allFlag = flags['all']?.flag;
 	const nameFlag = flags['name'];
 	const dryFlag = flags['dry'];
@@ -54,6 +56,10 @@ async function main(argv) {
 
 	//build questions
 	const questions = [];
+
+	if (flags['no-colors']) {
+		chalk.level = 0;
+	}
 
 	if (dryFlag) {
 		console.log(
@@ -100,22 +106,52 @@ async function main(argv) {
 		});
 	}
 
-	if (flags['no-colors']) {
-		chalk.level = 0;
+	if (cliBuildOptions.length !== 1) {
+		if (cliBuildOptions.length > 1) {
+			console.log(
+				chalk.hex(
+					'#FF7F11'
+				)`Warning: expected 1 build option, received ${cliBuildOptions.length}`
+			);
+		}
+
+		questions.push({
+			type: 'select',
+			name: 'buildOptions',
+			hint: 'Return/Enter to submit',
+			message: 'Select your build tool',
+			choices: optionsToPromptsChoices(config.buildOptions),
+		});
 	}
 
 	try {
 		const formResults = await prompts(questions);
 		const name = formResults?.name ?? cliDir ?? nameFlag.value;
 		const dir = cliDir ?? name;
+
 		const filesManager = new FileManager(dir);
 
 		const selectedOptions = new OptionsCollection()
 			.addAll(cliOptions)
 			.addAll(formResults?.options);
 
+		const selectedBuildOptions = new OptionsCollection()
+			.addAll(cliOptions)
+			.add(formResults?.buildOption);
+
 		if (allFlag) {
 			selectedOptions.addAll(options);
+			if (selectedBuildOptions.list.length === 0) {
+				const defaultOption = config.buildOptions.find(
+					op => op.initialSelected
+				);
+
+				console.log(
+					`Info: no build option specified, using ${defaultOption.name} as default`
+				);
+
+				selectedBuildOptions.add(defaultOption);
+			}
 		}
 
 		if (selectedOptions.includes(webpack, vite)) {
@@ -188,7 +224,11 @@ async function main(argv) {
 							shorthandScripts.includes(script) ? '' : 'run '
 						}${script}`
 				)
-				.sort((a,b) => (a.split('run').at(1) ?? a).localeCompare(b.split('run').at(1) ?? b))
+				.sort((a, b) =>
+					(a.split('run').at(1) ?? a).localeCompare(
+						b.split('run').at(1) ?? b
+					)
+				)
 				.join(''),
 			'\r\n'
 		);
@@ -207,6 +247,10 @@ async function main(argv) {
 			default:
 				console.error(chalk.red(e.message));
 		}
+		if(env["VERBOSE"]){
+			console.error(e);
+		}
+		exit(1);
 	}
 }
 

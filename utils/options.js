@@ -1,6 +1,9 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 const FilesManager = require('./FilesManager');
+const ErrorWithCode = require('./ErrorWithCode');
+
+const UNKNOWN_OPTION_NAME = 'UNKNOWN_OPTION_NAME';
 
 const toYargsOptionsParam = options =>
 	options.reduce((acc, option) => {
@@ -65,7 +68,14 @@ class OptionsCollection {
 	}
 
 	findByName(name) {
-		return this.#options.find(opt => opt.name === name);
+		const result = this.#options.find(opt => opt.name === name);
+		if (result === undefined) {
+			throw new ErrorWithCode(
+				`Could not find option name ${name}`,
+				UNKNOWN_OPTION_NAME
+			);
+		}
+		return result;
 	}
 }
 

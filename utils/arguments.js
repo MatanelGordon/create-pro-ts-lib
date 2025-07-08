@@ -16,6 +16,7 @@ class ArgumentExtractor {
 	static #defaultConfig = {
 		options: [],
 		flags: [],
+		buildOptions: [],
 	};
 
 	#config;
@@ -55,6 +56,10 @@ class ArgumentExtractor {
 
 	getOptions(argv) {
 		return this.#config.options.filter(option => argv[option.name]);
+	}
+
+	getBuildOptions(argv) {
+		return this.#config.buildOptions.filter(option => argv[option.name]);
 	}
 }
 
