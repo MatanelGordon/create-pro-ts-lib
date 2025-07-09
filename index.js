@@ -20,6 +20,7 @@ const {
 	createFiles,
 } = require('./utils/template');
 const { toYargsOptionsParam, OptionsCollection } = require('./utils/options');
+const { detectPackageManager, createScriptString } = require('./utils/package-manager');
 
 const { options } = config;
 
@@ -185,7 +186,7 @@ async function main(argv) {
 			selectedOptions.add(nameFlagInstance);
 		}
 
-		const logicPayload = { dir, options: selectedOptions, name, flags };
+		const logicPayload = { dir, options: selectedOptions, name, flags, packageManager: detectPackageManager() };
 		await loadBaseLogic(filesManager, config, logicPayload);
 		await Promise.all(
 			selectedOptions.list
@@ -213,8 +214,6 @@ async function main(argv) {
 			filesManager.get('package.json').scripts ?? {}
 		).filter(x => !(/^pre/.test(x) || /^post/.test(x)));
 
-		const shorthandScripts = ['start', 'test'];
-
 		const purple = chalk.hex('#c58af9');
 		const { blue } = chalk;
 		console.log(
@@ -228,15 +227,13 @@ async function main(argv) {
 			selectedOptions.includes('husky')
 				? `\r\n\t ${chalk.greenBright`// git init or clone a repo`}`
 				: '',
-			`\r\n\t ${purple`npm`} install`,
+			`\r\n\t ${purple(detectPackageManager())} install`,
 			'\r\n\r\n',
 			'Available Commands:',
 			scripts
 				.map(
 					script =>
-						`\r\n\t${purple`npm`} ${
-							shorthandScripts.includes(script) ? '' : 'run '
-						}${script}`
+						`\r\n\t${createScriptString(script, { cli: purple })}`
 				)
 				.sort((a, b) =>
 					(a.split('run').at(1) ?? a).localeCompare(
