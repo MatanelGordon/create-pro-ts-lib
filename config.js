@@ -12,8 +12,10 @@ const chalk = require('chalk');
 const webpackLogic = require('./logics/webpack');
 const viteLogic = require('./logics/vite');
 const tsupLogic = require('./logics/tsup');
+const pkg = require('./package.json');
 
 module.exports = {
+	version: pkg.version ?? 'unknown',
 	options: [
 		new Option('tsx')
 			.setDescription('Adds Tsx')
