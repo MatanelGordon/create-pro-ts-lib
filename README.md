@@ -13,6 +13,7 @@
     <br/>[🐶 Husky](https://github.com/typicode/husky)
     <br/>[🧊 Webpack5](https://webpack.js.org/)
     <br/>[⚡ Vite](https://vitejs.dev/)
+    <br/>[⚡ Tsup](https://vitejs.dev/)
 
 these templates can be combined to allow maximum flexibility for your library.
 
@@ -142,38 +143,6 @@ There are also options to handle the CLI:
 
 -   `--dry`🏜 - run the CLI with no consequences.
 -   `--no-color`🎨 - run CLI output without color.
-
-### Vite / Webpack partial build
-
-In vite/webpack projects, you can specify whether you want your build to output commonjs, esm, or both (default is both).
-
-To output only commonjs files, use `COMMON_ONLY` variable before executing the build.
-
-example when using vite:
-
-package.json:
-
-```json
-{
-	"scripts": "COMMON_ONLY=true vite build"
-}
-```
-
-However, if you want to output only esm files, use `ESM_ONLY` variable before executing the build:
-
-example when using webpack:
-
-package.json:
-
-```json
-{
-	"scripts": "ESM_ONLY=true webpack"
-}
-```
-
-> NOTE: Both `COMMON_ONLY` and `ESM_ONLY` will work for both `vite` and `webpack`.
-
-> NOTE: You cannot use both variables at the same time. This will throw an error saying youre an idiot because you didnt read it <b style="font-size: 1.1rem">bundles to both commonjs and esm by default.</b>
 
 ## Note
 

@@ -20,8 +20,6 @@ const NODE_ENV = process.env['NODE_ENV'];
  */
 const OUT_DIR = 'dist';
 
-const COMMON_ONLY = !!process.env?.['COMMON_ONLY'];
-const ESM_ONLY = !!process.env?.['ESM_ONLY'];
 
 /**
  * @type {import("webpack").Configuration}
@@ -89,16 +87,4 @@ const esmConfig = {
 	},
 };
 
-const final = (() => {
-	if (COMMON_ONLY && ESM_ONLY) {
-		throw new Error('Cannot set both COMMON_ONLY and ESM_ONLY');
-	} else if (COMMON_ONLY) {
-		return commonJsConfig;
-	} else if (ESM_ONLY) {
-		return esmConfig;
-	}
-
-	return [commonJsConfig, esmConfig];
-})();
-
-export default final;
+export default [commonJsConfig, esmConfig];
