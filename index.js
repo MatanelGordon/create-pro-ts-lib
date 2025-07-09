@@ -26,8 +26,15 @@ const { options } = config;
 const mainCommand = yargs(hideBin(process.argv))
 	.usage('usage: \n\r create-pro-ts-lib <directory> <options>')
 	.help()
-	.version('1.0.0')
-	.options(toYargsOptionsParam([...options, ...config.flags]))
+	.version(config.version)
+	.options(
+		toYargsOptionsParam([
+			...options,
+			...config.flags,
+			...config.options,
+			...config.buildOptions,
+		])
+	)
 	.positional('directory', {
 		describe: 'A directory where you want initialize your ts project',
 		type: 'string',
@@ -38,7 +45,7 @@ async function main(argv) {
 	const cliDir = resolveDirectory(argv);
 	const argumentExtractor = new ArgumentExtractor(config);
 	const allOptions = new OptionsCollection().addAll(options);
-	const allBuildOptions = new OptionsCollection().addAll(config.buildOptions)
+	const allBuildOptions = new OptionsCollection().addAll(config.buildOptions);
 	const allFlags = new OptionsCollection().addAll(config.flags);
 	const flags = argumentExtractor.getFlags(argv);
 	const cliOptions = argumentExtractor.getOptions(argv);
@@ -117,7 +124,7 @@ async function main(argv) {
 
 		questions.push({
 			type: 'select',
-			name: 'buildOptions',
+			name: 'buildOption',
 			hint: 'Return/Enter to submit',
 			message: 'Select your build tool',
 			choices: optionsToPromptsChoices(config.buildOptions),
@@ -164,7 +171,12 @@ async function main(argv) {
 			selectedOptions.includes(prettier, eslint) ||
 			selectedOptions.includes(prettierEslint)
 		) {
-			selectedOptions.remove(prettier).remove(eslint).add(prettierEslint);
+			// letting prettier-eslint eslint.config.js override eslint and prettier
+			selectedOptions
+				.remove(eslint)
+				.remove(prettierEslint)
+				.add(eslint) // will add them in order
+				.add(prettierEslint); 
 		}
 
 		if (nameFlag || shouldSetDifferentName) {
@@ -176,12 +188,14 @@ async function main(argv) {
 		const logicPayload = { dir, options: selectedOptions, name, flags };
 		await loadBaseLogic(filesManager, config, logicPayload);
 		await Promise.all(
-			selectedOptions.list.map(async option =>
-				option?.logic(filesManager, config, {
-					...logicPayload,
-					optionValue: argv[option.name],
-				})
-			)
+			selectedOptions.list
+				.concat(selectedBuildOptions.list)
+				.map(async option =>
+					option?.logic(filesManager, config, {
+						...logicPayload,
+						optionValue: argv[option.name],
+					})
+				)
 		);
 
 		postProcessFiles(filesManager);
@@ -247,7 +261,7 @@ async function main(argv) {
 			default:
 				console.error(chalk.red(e.message));
 		}
-		if(env["VERBOSE"]){
+		if (env['VERBOSE']) {
 			console.error(e);
 		}
 		exit(1);
